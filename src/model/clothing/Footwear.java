@@ -1,4 +1,4 @@
-package model;
+package model.clothing;
 
 public class Footwear {
     
