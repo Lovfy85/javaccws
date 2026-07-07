@@ -25,7 +25,7 @@ public abstract class ClothingItem {
     }
 
     public String getColor(){
-        return brand;
+        return color;
     }
 
     public String getBrand(){

@@ -11,8 +11,8 @@ public class ImageLoader {
 
         Image resized = icon.getImage()
                 .getScaledInstance(
-                        150,
-                        150,
+                        250,
+                        250,
                         Image.SCALE_SMOOTH
                 );
 
