@@ -4,164 +4,236 @@ import java.awt.*;
 
 import model.*;
 import model.clothing.*;
+import exception.InvalidClothingException;
 import util.ImageLoader;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        StylesProfile stylesProfile = new StylesProfile(
-                "Casual",
-                "Neutral"
-        );
+        try {
 
-        Wardrobe wardrobe = new Wardrobe();
+            StylesProfile stylesProfile = new StylesProfile(
+                    "Casual",
+                    "Neutral"
+            );
 
-        Top top = new Top(
-                "T1",
-                "White T-Shirt",
-                "White",
-                "Uniqlo",
-                "resources/images/tops/white_tshirt.jpg",
-                "Short Sleeve"
-        );
+            Wardrobe wardrobe = new Wardrobe();
 
-        Bottom bottom = new Bottom(
-                "B1",
-                "Blue Jeans",
-                "Light Blue",
-                "Levi's",
-                "resources/images/bottoms/blue_jeans.jpg",
-                "Slim Fit"
-        );
+            Top top = new Top(
+                    "T1",
+                    "White T-Shirt",
+                    "White",
+                    "Uniqlo",
+                    "resources/images/tops/white_tshirt.jpg",
+                    "Short Sleeve"
+            );
 
-        Footwear footwear = new Footwear(
-                "F1",
-                "White Sneakers",
-                "White",
-                "Nike",
-                "resources/images/footwear/white_sneakers.jpg",
-                "Sneakers"
-        );
+            Bottom bottom = new Bottom(
+                    "B1",
+                    "Blue Jeans",
+                    "Blue",
+                    "Levi's",
+                    "resources/images/bottoms/blue_jeans.jpg",
+                    "Slim Fit"
+            );
 
-        wardrobe.addItem(top);
-        wardrobe.addItem(bottom);
-        wardrobe.addItem(footwear);
+            Footwear footwear = new Footwear(
+                    "F1",
+                    "White Sneakers",
+                    "White",
+                    "Nike",
+                    "resources/images/footwear/white_sneakers.jpg",
+                    "Sneakers"
+            );
 
-        User user = new User(
-                "U1",
-                "Cedar",
-                stylesProfile,
-                wardrobe
-        );
-
-        Outfit outfit = new Outfit(
-                top,
-                bottom,
-                footwear
-        );
-
-        user.display();
-        System.out.println();
-        outfit.display();
+            wardrobe.addItem(top);
+            wardrobe.addItem(bottom);
+            wardrobe.addItem(footwear);
 
 
-
-        JFrame frame = new JFrame("Clothing Capsule Wardrobe");
-
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(900, 800);
-        frame.setLocationRelativeTo(null);
-
-
-        JPanel mainPanel = new JPanel();
-
-        mainPanel.setLayout(
-                new BoxLayout(mainPanel, BoxLayout.Y_AXIS)
-        );
-
-        mainPanel.setBackground(
-                new Color(240, 240, 240)
-        );
-
-        mainPanel.setBorder(
-                new EmptyBorder(20, 20, 20, 20)
-        );
+            User user = new User(
+                    "U1",
+                    "Cedar",
+                    stylesProfile,
+                    wardrobe
+            );
 
 
-        JLabel title = new JLabel(
-                "Clothing Capsule Wardrobe"
-        );
-
-        title.setFont(
-                new Font("Arial", Font.BOLD, 28)
-        );
-
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+            Outfit outfit = new Outfit(
+                    top,
+                    bottom,
+                    footwear
+            );
 
 
-        JLabel userInfo = new JLabel(
-                "User: " + user.getName()
-                + " | Style: " + stylesProfile.getStyle()
-                + " | Preference: " + stylesProfile.getColorPreference()
-        );
+            user.display();
 
-        userInfo.setFont(
-                new Font("Arial", Font.PLAIN, 18)
-        );
+            System.out.println();
 
-        userInfo.setAlignmentX(Component.CENTER_ALIGNMENT);
+            outfit.display();
 
 
 
-        mainPanel.add(title);
-        mainPanel.add(Box.createVerticalStrut(10));
-        mainPanel.add(userInfo);
-        mainPanel.add(Box.createVerticalStrut(30));
+            JFrame frame = new JFrame(
+                    "Clothing Capsule Wardrobe"
+            );
 
-        mainPanel.add(
-                createCard(
-                        top.getName(),
-                        top.getBrand(),
-                        top.getColor(),
-                        ImageLoader.load(top.getImagePath())
-                )
-        );
+            frame.setDefaultCloseOperation(
+                    JFrame.EXIT_ON_CLOSE
+            );
 
-        mainPanel.add(
-                Box.createVerticalStrut(20)
-        );
+            frame.setSize(
+                    900,
+                    800
+            );
 
-        mainPanel.add(
-                createCard(
-                        bottom.getName(),
-                        bottom.getBrand(),
-                        bottom.getColor(),
-                        ImageLoader.load(bottom.getImagePath())
-                )
-        );
+            frame.setLocationRelativeTo(null);
 
-        mainPanel.add(
-                Box.createVerticalStrut(20)
-        );
 
-        mainPanel.add(
-                createCard(
-                        footwear.getName(),
-                        footwear.getBrand(),
-                        footwear.getColor(),
-                        ImageLoader.load(footwear.getImagePath())
-                )
-        );
 
-        JScrollPane scrollPane = new JScrollPane(mainPanel);
+            JPanel mainPanel = new JPanel();
 
-        scrollPane.getVerticalScrollBar()
-                .setUnitIncrement(16);
+            mainPanel.setLayout(
+                    new BoxLayout(
+                            mainPanel,
+                            BoxLayout.Y_AXIS
+                    )
+            );
 
-        frame.add(scrollPane);
+            mainPanel.setBackground(
+                    new Color(
+                            240,
+                            240,
+                            240
+                    )
+            );
 
-        frame.setVisible(true);
+            mainPanel.setBorder(
+                    new EmptyBorder(
+                            20,
+                            20,
+                            20,
+                            20
+                    )
+            );
+
+
+            JLabel title = new JLabel(
+                    "Clothing Capsule Wardrobe"
+            );
+
+            title.setFont(
+                    new Font(
+                            "Arial",
+                            Font.BOLD,
+                            28
+                    )
+            );
+
+            title.setAlignmentX(
+                    Component.CENTER_ALIGNMENT
+            );
+
+
+            JLabel userInfo = new JLabel(
+                    "User: " + user.getName()
+                    + " | Style: " + stylesProfile.getStyle()
+                    + " | Preference: " + stylesProfile.getColorPreference()
+            );
+
+            userInfo.setFont(
+                    new Font(
+                            "Arial",
+                            Font.PLAIN,
+                            18
+                    )
+            );
+
+            userInfo.setAlignmentX(
+                    Component.CENTER_ALIGNMENT
+            );
+
+
+
+            mainPanel.add(title);
+
+            mainPanel.add(
+                    Box.createVerticalStrut(10)
+            );
+
+            mainPanel.add(userInfo);
+
+            mainPanel.add(
+                    Box.createVerticalStrut(30)
+            );
+
+
+            mainPanel.add(
+                    createCard(
+                            top.getName(),
+                            top.getBrand(),
+                            top.getColor(),
+                            ImageLoader.load(
+                                    top.getImagePath()
+                            )
+                    )
+            );
+
+            mainPanel.add(
+                    Box.createVerticalStrut(20)
+            );
+
+
+            mainPanel.add(
+                    createCard(
+                            bottom.getName(),
+                            bottom.getBrand(),
+                            bottom.getColor(),
+                            ImageLoader.load(
+                                    bottom.getImagePath()
+                            )
+                    )
+            );
+
+
+            mainPanel.add(
+                    Box.createVerticalStrut(20)
+            );
+
+
+            mainPanel.add(
+                    createCard(
+                            footwear.getName(),
+                            footwear.getBrand(),
+                            footwear.getColor(),
+                            ImageLoader.load(
+                                    footwear.getImagePath()
+                            )
+                    )
+            );
+
+
+            JScrollPane scrollPane = new JScrollPane(
+                    mainPanel
+            );
+
+
+            scrollPane.getVerticalScrollBar()
+                    .setUnitIncrement(16);
+
+
+            frame.add(scrollPane);
+
+            frame.setVisible(true);
+
+        } catch (InvalidClothingException e) {
+
+            System.out.println(
+                    "Invalid clothing detected: "
+                    + e.getMessage()
+            );
+        }
     }
 
 
@@ -174,17 +246,26 @@ public class Main {
     ) {
 
         JPanel card = new JPanel(
-                new BorderLayout(20, 10)
+                new BorderLayout(
+                        20,
+                        10
+                )
         );
+
 
         card.setBackground(
                 Color.WHITE
         );
 
+
         card.setBorder(
                 BorderFactory.createCompoundBorder(
                         BorderFactory.createLineBorder(
-                                new Color(210, 210, 210)
+                                new Color(
+                                        210,
+                                        210,
+                                        210
+                                )
                         ),
                         new EmptyBorder(
                                 15,
@@ -195,7 +276,11 @@ public class Main {
                 )
         );
 
-        JLabel imageLabel = new JLabel(image);
+
+        JLabel imageLabel = new JLabel(
+                image
+        );
+
 
         JPanel info = new JPanel();
 
@@ -204,10 +289,17 @@ public class Main {
         );
 
         info.setLayout(
-                new BoxLayout(info, BoxLayout.Y_AXIS)
+                new BoxLayout(
+                        info,
+                        BoxLayout.Y_AXIS
+                )
         );
 
-        JLabel nameLabel = new JLabel(name);
+
+        JLabel nameLabel = new JLabel(
+                name
+        );
+
 
         nameLabel.setFont(
                 new Font(
@@ -217,28 +309,40 @@ public class Main {
                 )
         );
 
+
         JLabel brandLabel = new JLabel(
                 "Brand: " + brand
         );
+
 
         JLabel colorLabel = new JLabel(
                 "Color: " + color
         );
 
+
         info.add(nameLabel);
-        info.add(Box.createVerticalStrut(10));
+
+        info.add(
+                Box.createVerticalStrut(10)
+        );
+
         info.add(brandLabel);
+
         info.add(colorLabel);
+
+
 
         card.add(
                 imageLabel,
                 BorderLayout.WEST
         );
 
+
         card.add(
                 info,
                 BorderLayout.CENTER
         );
+
 
         return card;
     }
