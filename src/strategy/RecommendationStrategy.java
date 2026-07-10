@@ -5,5 +5,5 @@ import exception.InvalidClothingException;
 
 public interface RecommendationStrategy {
     
-    Outfit recommedOutfit(Wardrobe wardrobe) throws InvalidClothingException;
+    Outfit recommendOutfit(Wardrobe wardrobe) throws InvalidClothingException;
 }
