@@ -26,6 +26,7 @@ public class Main {
                     "White",
                     "Uniqlo",
                     "resources/images/tops/white_tshirt.jpg",
+                    ClothingStyle.CASUAL,
                     "Short Sleeve"
             );
 
@@ -35,6 +36,7 @@ public class Main {
                     "Blue",
                     "Levi's",
                     "resources/images/bottoms/blue_jeans.jpg",
+                    ClothingStyle.CASUAL,
                     "Slim Fit"
             );
 
@@ -44,6 +46,7 @@ public class Main {
                     "White",
                     "Nike",
                     "resources/images/footwear/white_sneakers.jpg",
+                    ClothingStyle.CASUAL,
                     "Sneakers"
             );
 

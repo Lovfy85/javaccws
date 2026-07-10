@@ -1,5 +1,7 @@
 package model.clothing;
 
+import model.ClothingStyle;
+
 public abstract class ClothingItem {
     
     protected String id;
@@ -7,13 +9,15 @@ public abstract class ClothingItem {
     protected String color;
     protected String brand;
     protected String imagePath;
+    protected ClothingStyle style;
 
-    public ClothingItem(String id, String name, String color, String brand, String imagePath){
+    public ClothingItem(String id, String name, String color, String brand, String imagePath, ClothingStyle style){
         this.id = id;
         this.name = name;
         this.color = color;
         this.brand = brand;
         this.imagePath = imagePath;
+        this.style = style;
     }
 
     public String getId(){
@@ -36,8 +40,12 @@ public abstract class ClothingItem {
         return imagePath;
     }
 
+    public ClothingStyle getStyle(){
+        return style;
+    }
+
     @Override
     public String toString(){
-        return name + "[" + color + "," + brand + "]";
+        return name + "[" + color + "," + brand + "," + style + "]";
     }
 }

@@ -1,11 +1,13 @@
 package model.clothing;
 
+import model.ClothingStyle;
+
 public class Footwear extends ClothingItem{
 
     private String type;
 
-    public Footwear(String id, String name, String color, String brand, String imagePath, String type) {
-        super(id, name, color, brand, imagePath);
+    public Footwear(String id, String name, String color, String brand, String imagePath, ClothingStyle style, String type) {
+        super(id, name, color, brand, imagePath, style);
         this.type = type;
     }
 
