@@ -31,11 +31,26 @@ public class ColorMatcher {
             "purple"
         );
 
+
+    private static final List<String> EARTH_TONES =
+        Arrays.asList(
+            "brown",
+            "beige",
+            "olive",
+            "green"
+        );
+
+
+    private static final List<String> CONTRAST_COLORS =
+        Arrays.asList(
+            "black",
+            "white",
+            "red",
+            "blue"
+        );
+
     
-    public static boolean isCompatible(
-        String color1, 
-        String color2
-    ){
+    public static boolean isCompatible(String color1, String color2){
 
         if(color1 == null || color2 == null){
             return false;
@@ -60,6 +75,19 @@ public class ColorMatcher {
             return true;
         }
 
+        if(isEarthTone(color1) && isEarthTone(color2)){
+            return true;
+        }
+
+        if((isWarm(color1) && isCool(color2)) || (isWarm(color2) && isCool(color1))){
+            return true;
+        }
+
+        if(CONTRAST_COLORS.contains(color1) || CONTRAST_COLORS.contains(color2)){
+            return true;
+        }
+
+
         return false;
     }
 
@@ -76,10 +104,13 @@ public class ColorMatcher {
         return COOL_COLORS.contains(color.toLowerCase());
     }
 
+    public static boolean isEarthTone(String color){
+        return EARTH_TONES.contains(color.toLowerCase());
+    }
 
-    public static String getColorCategory(
-        String color
-    ){
+
+    public static String getColorCategory(String color){
+
         if(isNeutral(color)){
             return "Neutral";
         }
@@ -90,6 +121,10 @@ public class ColorMatcher {
 
         if(isCool(color)){
             return "Cool";
+        }
+
+        if(isEarthTone(color)){
+            return "Earth Tone";
         }
 
         return "Unknown";
