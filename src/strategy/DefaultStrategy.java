@@ -4,78 +4,122 @@ import model.*;
 import model.clothing.*;
 import exception.InvalidClothingException;
 
-public class DefaultStrategy implements RecommendationStrategy{
+public abstract class DefaultStrategy implements RecommendationStrategy {
 
 
     @Override
-    public Outfit recommendOutfit(Wardrobe wardrobe) throws InvalidClothingException {
+    public Outfit recommendOutfit(Wardrobe wardrobe)throws InvalidClothingException {
 
         Top selectedTop = null;
         Bottom selectedBottom = null;
         Footwear selectedFootwear = null;
 
+        for(ClothingItem item : wardrobe.getItems()) {
 
-        for(ClothingItem item : wardrobe.getItems()){
-
-            if(item instanceof Top && selectedTop == null){
+            if(item instanceof Top && selectedTop == null) {
                 selectedTop = (Top) item;
             }
 
-
-            if(item instanceof Bottom && selectedBottom == null){
+            if(item instanceof Bottom && selectedBottom == null) {
                 selectedBottom = (Bottom) item;
             }
 
-
-            if(item instanceof Footwear && selectedFootwear == null){
+            if(item instanceof Footwear && selectedFootwear == null) {
                 selectedFootwear = (Footwear) item;
             }
+
         }
 
-
-        if(selectedTop == null || selectedBottom == null || selectedFootwear == null){
+        if(selectedTop == null || selectedBottom == null || selectedFootwear == null) {
             throw new InvalidClothingException("Not enough clothing items available to create an outfit.");
         }
 
-
         return new Outfit(selectedTop, selectedBottom, selectedFootwear);
+
     }
 
 
-    protected Outfit createStyleOutfit(Wardrobe wardrobe, ClothingStyle style) throws InvalidClothingException {
+    @Override
+    public OutfitOptions getOutfitOptions(Wardrobe wardrobe) throws InvalidClothingException {
 
-        Top selectedTop = null;
-        Bottom selectedBottom = null;
-        Footwear selectedFootwear = null;
+        OutfitOptions options = new OutfitOptions();
+
+        for(ClothingItem item : wardrobe.getItems()) {
+
+            if(item instanceof Top) {
+                options.addTop((Top)item);
+            }
 
 
-        for(ClothingItem item : wardrobe.getItems()){
+            else if(item instanceof Bottom) {
+                options.addBottom((Bottom)item);
+            }
 
-            if(item.getStyle() == style){
+            else if(item instanceof Footwear) {
+                options.addFootwear((Footwear)item);
+            }
+
+        }
+
+        if(options.isEmpty()) {
+            throw new InvalidClothingException("No clothing options available.");
+        }
+
+        return options;
+    }
 
 
-                if(item instanceof Top && selectedTop == null){
-                    selectedTop = (Top) item;
+    protected OutfitOptions createStyleOptions(Wardrobe wardrobe,ClothingStyle style)throws InvalidClothingException {
+
+        OutfitOptions options = new OutfitOptions();
+
+        for(ClothingItem item : wardrobe.getItems()) {
+                
+            if(item.getStyle() == style) {
+
+                if(item instanceof Top) {
+                    options.addTop((Top)item);
                 }
 
-
-                if(item instanceof Bottom && selectedBottom == null){
-                    selectedBottom = (Bottom) item;
+                else if(item instanceof Bottom) {
+                    options.addBottom((Bottom)item);
                 }
 
-
-                if(item instanceof Footwear && selectedFootwear == null){
-                    selectedFootwear = (Footwear) item;
+                else if(item instanceof Footwear) {
+                    options.addFootwear((Footwear)item);
                 }
             }
         }
 
-
-        if(selectedTop == null || selectedBottom == null || selectedFootwear == null){
-            throw new InvalidClothingException("Not enough clothing items available for " + style + " outfit.");
+        if(options.isEmpty()) {
+            throw new InvalidClothingException(
+                    "Not enough clothing items available for "
+                    + style
+                    + " outfit."
+            );
         }
 
+        return options;
+    }
 
-        return new Outfit(selectedTop, selectedBottom, selectedFootwear);
+
+    protected Outfit createStyleOutfit(Wardrobe wardrobe,ClothingStyle style) throws InvalidClothingException {
+
+        OutfitOptions options = createStyleOptions(wardrobe, style);
+
+        if(options.getTops().isEmpty() || options.getBottoms().isEmpty() || options.getFootwear().isEmpty()) {
+
+            throw new InvalidClothingException(
+                    "Missing clothing category for "
+                    + style
+                    + " outfit."
+            );
+        }
+
+        return new Outfit(
+            options.getTops().get(0),
+            options.getBottoms().get(0),
+            options.getFootwear().get(0)
+        );
     }
 }

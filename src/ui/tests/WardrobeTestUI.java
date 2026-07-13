@@ -14,13 +14,15 @@ public class WardrobeTestUI {
 
             Wardrobe wardrobe = TestDataFactory.createSampleWardrobe();
 
-            User user = new User( "U1","Cedar", stylesProfile, wardrobe);
+            User user = new User("U1", "Cedar", stylesProfile, wardrobe);
 
-            //Chnage this whenever you want to see other fits in other styles for now.
+            // Change this whenever you want to test another clothing style.
             RecommendationStrategy strategy = new FormalStrategy();
 
-            Outfit outfit = strategy.recommendOutfit(wardrobe);
-            OutfitDisplayUI display = new OutfitDisplayUI(user, outfit);
+            OutfitOptions options = strategy.getOutfitOptions(wardrobe);
+
+            OutfitDisplayUI display = new OutfitDisplayUI(user, options);
+
             display.show();
 
         } catch(InvalidClothingException e) {
