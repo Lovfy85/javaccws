@@ -2,40 +2,41 @@ package strategy;
 
 import model.*;
 import model.clothing.*;
+
 import exception.InvalidClothingException;
+import service.WardrobeService;
+
 
 public abstract class DefaultStrategy implements RecommendationStrategy {
 
+    private WardrobeService wardrobeService;
+
+    public DefaultStrategy() {
+        wardrobeService = new WardrobeService();
+    }
+
 
     @Override
-    public Outfit recommendOutfit(Wardrobe wardrobe)throws InvalidClothingException {
+    public Outfit recommendOutfit(Wardrobe wardrobe) throws InvalidClothingException {
 
-        Top selectedTop = null;
-        Bottom selectedBottom = null;
-        Footwear selectedFootwear = null;
+        OutfitOptions options = getOutfitOptions(wardrobe);
 
-        for(ClothingItem item : wardrobe.getItems()) {
-
-            if(item instanceof Top && selectedTop == null) {
-                selectedTop = (Top) item;
-            }
-
-            if(item instanceof Bottom && selectedBottom == null) {
-                selectedBottom = (Bottom) item;
-            }
-
-            if(item instanceof Footwear && selectedFootwear == null) {
-                selectedFootwear = (Footwear) item;
-            }
-
+        if(options.isEmpty()) {
+            throw new InvalidClothingException( "No outfit options available.");
         }
 
-        if(selectedTop == null || selectedBottom == null || selectedFootwear == null) {
-            throw new InvalidClothingException("Not enough clothing items available to create an outfit.");
+        if(options.getTops().isEmpty()
+            || options.getBottoms().isEmpty()
+            || options.getFootwear().isEmpty()) {
+
+            throw new InvalidClothingException("Missing clothing category.");
         }
 
-        return new Outfit(selectedTop, selectedBottom, selectedFootwear);
-
+        return new Outfit(
+            options.getTops().get(0),
+            options.getBottoms().get(0),
+            options.getFootwear().get(0)
+        );
     }
 
 
@@ -50,7 +51,6 @@ public abstract class DefaultStrategy implements RecommendationStrategy {
                 options.addTop((Top)item);
             }
 
-
             else if(item instanceof Bottom) {
                 options.addBottom((Bottom)item);
             }
@@ -58,7 +58,6 @@ public abstract class DefaultStrategy implements RecommendationStrategy {
             else if(item instanceof Footwear) {
                 options.addFootwear((Footwear)item);
             }
-
         }
 
         if(options.isEmpty()) {
@@ -69,33 +68,19 @@ public abstract class DefaultStrategy implements RecommendationStrategy {
     }
 
 
-    protected OutfitOptions createStyleOptions(Wardrobe wardrobe,ClothingStyle style)throws InvalidClothingException {
+    protected OutfitOptions createStyleOptions(Wardrobe wardrobe, ClothingStyle style) throws InvalidClothingException {
 
-        OutfitOptions options = new OutfitOptions();
-
-        for(ClothingItem item : wardrobe.getItems()) {
-                
-            if(item.getStyle() == style) {
-
-                if(item instanceof Top) {
-                    options.addTop((Top)item);
-                }
-
-                else if(item instanceof Bottom) {
-                    options.addBottom((Bottom)item);
-                }
-
-                else if(item instanceof Footwear) {
-                    options.addFootwear((Footwear)item);
-                }
-            }
-        }
+        OutfitOptions options =
+            wardrobeService.getOutfitOptionsByStyle(
+                wardrobe,
+                style
+            );
 
         if(options.isEmpty()) {
             throw new InvalidClothingException(
-                    "Not enough clothing items available for "
-                    + style
-                    + " outfit."
+                "No clothing available for "
+                + style
+                + " style."
             );
         }
 
@@ -103,11 +88,17 @@ public abstract class DefaultStrategy implements RecommendationStrategy {
     }
 
 
-    protected Outfit createStyleOutfit(Wardrobe wardrobe,ClothingStyle style) throws InvalidClothingException {
+    protected Outfit createStyleOutfit(Wardrobe wardrobe, ClothingStyle style) throws InvalidClothingException {
 
-        OutfitOptions options = createStyleOptions(wardrobe, style);
+        OutfitOptions options =
+            createStyleOptions(
+                wardrobe,
+                style
+            );
 
-        if(options.getTops().isEmpty() || options.getBottoms().isEmpty() || options.getFootwear().isEmpty()) {
+        if(options.getTops().isEmpty()
+                || options.getBottoms().isEmpty()
+                || options.getFootwear().isEmpty()) {
 
             throw new InvalidClothingException(
                     "Missing clothing category for "
@@ -117,9 +108,10 @@ public abstract class DefaultStrategy implements RecommendationStrategy {
         }
 
         return new Outfit(
-            options.getTops().get(0),
-            options.getBottoms().get(0),
-            options.getFootwear().get(0)
+                options.getTops().get(0),
+                options.getBottoms().get(0),
+                options.getFootwear().get(0)
         );
     }
+
 }

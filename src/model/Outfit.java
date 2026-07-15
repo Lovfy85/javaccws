@@ -8,16 +8,18 @@ import exception.InvalidClothingException;
 import util.ColorMatcher;
 
 public class Outfit {
-    
+
     private Top top;
     private Bottom bottom;
     private Footwear footwear;
+    private int score;
 
     public Outfit(Top top, Bottom bottom, Footwear footwear) throws InvalidClothingException {
-        
+
         this.top = top;
         this.bottom = bottom;
         this.footwear = footwear;
+        this.score = 0;
 
         validateOutfit();
     }
@@ -25,46 +27,37 @@ public class Outfit {
 
     private void validateOutfit() throws InvalidClothingException {
 
-        if(top == null || bottom == null || footwear == null){
-            throw new InvalidClothingException(
-                    "An outfit must contain a top, bottom, and footwear."
-            );
+        if(top == null || bottom == null || footwear == null) {
+
+            throw new InvalidClothingException("An outfit must contain a top, bottom, and footwear.");
         }
 
 
         if(!ColorMatcher.isCompatible(
-                top.getColor(),
-                bottom.getColor()
-        )){
-            throw new InvalidClothingException(
-                    "Top color is not compatible with bottom color."
-            );
+            top.getColor(),
+            bottom.getColor())) {
+
+            throw new InvalidClothingException( "Top color is not compatible with bottom color.");
         }
 
-
         if(!ColorMatcher.isCompatible(
-                bottom.getColor(),
-                footwear.getColor()
-        )){
-            throw new InvalidClothingException(
-                    "Bottom color is not compatible with footwear color."
-            );
+            bottom.getColor(),
+            footwear.getColor())) {
+
+            throw new InvalidClothingException( "Bottom color is not compatible with footwear color.");
         }
 
-
         if(!ColorMatcher.isCompatible(
-                top.getColor(),
-                footwear.getColor()
-        )){
-            throw new InvalidClothingException(
-                    "Top color is not compatible with footwear color."
-            );
+            top.getColor(),
+            footwear.getColor())) {
+
+            throw new InvalidClothingException("Top color is not compatible with footwear color.");
         }
     }
 
-
     public Top getTop(){
         return top;
+
     }
 
     public Bottom getBottom(){
@@ -75,10 +68,20 @@ public class Outfit {
         return footwear;
     }
 
+    public int getScore(){
+        return score;
+    }
+
+    public void setScore(int score){
+        this.score = score;
+    }
+
     public void display(){
-        System.out.println("Outfit: ");
+
+        System.out.println("Outfit:");
         System.out.println("Top: " + top);
         System.out.println("Bottom: " + bottom);
         System.out.println("Footwear: " + footwear);
+        System.out.println("Score: " + score);
     }
 }
