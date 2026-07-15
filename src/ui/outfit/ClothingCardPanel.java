@@ -113,18 +113,17 @@ public class ClothingCardPanel extends JPanel {
 
 
         JLabel colorLabel = new JLabel(
-            "Color: " + item.getColor()
+            "Color Choice: " + item.getColor()
         );
 
 
         JLabel colorCategoryLabel = new JLabel(
-            "Color Category: "
-            + ColorMatcher.getColorCategory(item.getColor())
+            "Color Category: " + ColorMatcher.getColorCategory(item.getColor())
         );
 
 
         JLabel styleLabel = new JLabel(
-            "Style: " + item.getStyle()
+            "Style Category: " + item.getStyle()
         );
 
 

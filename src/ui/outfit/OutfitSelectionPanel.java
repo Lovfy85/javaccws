@@ -25,8 +25,9 @@ public class OutfitSelectionPanel extends JPanel {
     private CategorySelectionPanel footwearPanel;
 
     private JLabel scoreLabel;
+    private JLabel scoreDescription;
 
-    private GeneratedOutfitPanel generatedOutfitPanel;
+    private boolean scoreHidden = true;
 
 
     public OutfitSelectionPanel(OutfitOptions options, User user, RecommendationEngine recommendationEngine) {
@@ -157,10 +158,89 @@ public class OutfitSelectionPanel extends JPanel {
         add(Box.createVerticalStrut(20));
 
 
-        generatedOutfitPanel =
-            new GeneratedOutfitPanel();
+        JButton scoreButton =
+            new JButton(
+                "Show Score Details"
+            );
 
-        add(generatedOutfitPanel);
+
+        scoreButton.setAlignmentX(
+            Component.CENTER_ALIGNMENT
+        );
+
+
+        scoreDescription =
+            new JLabel(
+                "<html>"
+                + "Score evaluates:<br>"
+                + "- color compatibility between clothing items<br>"
+                + "- matching your preferred color profile<br>"
+                + "- outfit style consistency<br>"
+                + "- versatility of neutral colors<br><br>"
+                + "Score Rating:<br>"
+                + "60 - 70: Excellent match<br>"
+                + "45 - 59: Strong match<br>"
+                + "30 - 44: Good match<br>"
+                + "15 - 29: Fair match<br>"
+                + "0 - 14: Poor match"
+                + "</html>"
+            );
+
+
+        scoreDescription.setFont(
+            new Font(
+                "Arial",
+                Font.PLAIN,
+                14
+            )
+        );
+
+
+        scoreDescription.setAlignmentX(
+            Component.CENTER_ALIGNMENT
+        );
+
+
+        scoreDescription.setVisible(false);
+
+
+        scoreButton.addActionListener(
+            e -> {
+
+                scoreHidden = !scoreHidden;
+
+                scoreDescription.setVisible(
+                    !scoreHidden
+                );
+
+
+                if(scoreHidden) {
+
+                    scoreButton.setText(
+                        "Show Score Details"
+                    );
+
+                } else {
+
+                    scoreButton.setText(
+                        "Hide Score Details"
+                    );
+                }
+
+
+                revalidate();
+                repaint();
+            }
+        );
+
+
+        add(scoreButton);
+
+        add(
+            Box.createVerticalStrut(5)
+        );
+
+        add(scoreDescription);
     }
 
 
@@ -238,12 +318,8 @@ public class OutfitSelectionPanel extends JPanel {
 
 
             scoreLabel.setText(
-                "Recommendation Score: " + score
-            );
-
-
-            generatedOutfitPanel.display(
-                selectedOutfit
+                "Recommendation Score: "
+                + score
             );
 
         }

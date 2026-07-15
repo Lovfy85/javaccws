@@ -9,26 +9,6 @@ public class OutfitScorer {
 
         int score = 0;
 
-        ClothingStyle preferredStyle =
-            ClothingStyle.valueOf(
-                user.getStylesProfile()
-                    .getStyle()
-                    .toUpperCase()
-            );
-
-        if(outfit.getTop().getStyle() == preferredStyle) {
-            score += 20;
-        }
-
-        if(outfit.getBottom().getStyle() == preferredStyle) {
-            score += 20;
-        }
-
-        if(outfit.getFootwear().getStyle() == preferredStyle) {
-            score += 20;
-        }
-
-
         if(ColorMatcher.isCompatible(
             outfit.getTop().getColor(),
             outfit.getBottom().getColor())) {
