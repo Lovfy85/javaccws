@@ -31,12 +31,7 @@ public class CategorySelectionPanel extends JPanel {
             BorderFactory.createLineBorder(new Color(210, 210, 210))
         );
 
-
-        add(
-            createCategoryLabel(),
-            BorderLayout.NORTH
-        );
-
+        add(createCategoryLabel(), BorderLayout.NORTH);
 
         contentPanel = new JPanel();
 
@@ -49,10 +44,10 @@ public class CategorySelectionPanel extends JPanel {
 
         contentPanel.setBackground(Color.WHITE);
 
+        add(contentPanel, BorderLayout.CENTER);
 
-        add(
-            contentPanel,
-            BorderLayout.CENTER
+        selector.addActionListener(
+            e -> updateSelectedItem()
         );
 
 
@@ -62,9 +57,9 @@ public class CategorySelectionPanel extends JPanel {
 
     private JLabel createCategoryLabel() {
 
-        JLabel categoryLabel = new JLabel(category);
+        JLabel label = new JLabel(category);
 
-        categoryLabel.setFont(
+        label.setFont(
             new Font(
                 "Arial",
                 Font.BOLD,
@@ -72,7 +67,7 @@ public class CategorySelectionPanel extends JPanel {
             )
         );
 
-        categoryLabel.setBorder(
+        label.setBorder(
             new EmptyBorder(
                 10,
                 10,
@@ -81,8 +76,7 @@ public class CategorySelectionPanel extends JPanel {
             )
         );
 
-
-        return categoryLabel;
+        return label;
     }
 
 
@@ -91,19 +85,10 @@ public class CategorySelectionPanel extends JPanel {
         contentPanel.removeAll();
 
 
-        for(ClothingItem item : items) {
-
-            contentPanel.add(
-                new ClothingCardPanel(item)
+        JLabel selectedLabel =
+            new JLabel(
+                "Selected:"
             );
-
-            contentPanel.add(
-                Box.createVerticalStrut(10)
-            );
-        }
-
-
-        JLabel selectedLabel = new JLabel("Selected:");
 
         selectedLabel.setFont(
             new Font(
@@ -113,9 +98,7 @@ public class CategorySelectionPanel extends JPanel {
             )
         );
 
-
         contentPanel.add(selectedLabel);
-
 
         selector.setMaximumSize(
             new Dimension(
@@ -124,9 +107,30 @@ public class CategorySelectionPanel extends JPanel {
             )
         );
 
-
         contentPanel.add(selector);
 
+        contentPanel.add(
+            Box.createVerticalStrut(15)
+        );
+
+        updateSelectedItem();
+
+        revalidate();
+        repaint();
+    }
+
+
+    private void updateSelectedItem() {
+
+        while(contentPanel.getComponentCount() > 3) {
+            contentPanel.remove(3);
+        }
+
+        ClothingItem selectedItem = (ClothingItem) selector.getSelectedItem();
+
+        if(selectedItem != null) {
+            contentPanel.add(new ClothingCardPanel(selectedItem));
+        }
 
         revalidate();
         repaint();
