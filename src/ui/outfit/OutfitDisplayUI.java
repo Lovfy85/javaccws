@@ -8,6 +8,8 @@ import java.awt.*;
 import model.*;
 
 import service.RecommendationEngine;
+import exception.InvalidClothingException;
+
 
 public class OutfitDisplayUI {
 
@@ -15,6 +17,8 @@ public class OutfitDisplayUI {
     private Outfit outfit;
     private OutfitOptions options;
     private RecommendationEngine recommendationEngine;
+
+    private OutfitSelectionPanel outfitSelectionPanel;
 
 
     public OutfitDisplayUI(User user, Outfit outfit) {
@@ -63,36 +67,78 @@ public class OutfitDisplayUI {
 
         mainPanel.add(Box.createVerticalStrut(10));
 
-        mainPanel.add(new UserInfoPanel(user));
+
+        mainPanel.add(
+            new UserInfoPanel(
+                user,
+                this
+            )
+        );
+
 
         mainPanel.add(Box.createVerticalStrut(30));
 
 
         if (options != null) {
 
-            mainPanel.add(
+            outfitSelectionPanel =
                 new OutfitSelectionPanel(
                     options,
                     user,
                     recommendationEngine
-                )
+                );
+
+
+            mainPanel.add(
+                outfitSelectionPanel
             );
 
         } else if (outfit != null) {
 
-            mainPanel.add(createRecommendedOutfitPanel());
+            mainPanel.add(
+                createRecommendedOutfitPanel()
+            );
 
         }
 
 
         JScrollPane scrollPane = new JScrollPane(mainPanel);
 
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.getVerticalScrollBar()
+            .setUnitIncrement(16);
 
 
         frame.add(scrollPane);
 
         frame.setVisible(true);
+    }
+
+
+    public void refreshOutfitOptions() {
+
+        try {
+
+            options =
+                recommendationEngine
+                    .getOutfitOptions(
+                        user
+                    );
+
+
+            outfitSelectionPanel
+                .refresh(
+                    options
+                );
+
+        }
+
+        catch(InvalidClothingException e) {
+
+            JOptionPane.showMessageDialog(
+                null,
+                e.getMessage()
+            );
+        }
     }
 
 

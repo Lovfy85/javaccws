@@ -4,13 +4,8 @@ import javax.swing.*;
 
 import java.awt.*;
 
-import model.Outfit;
-import model.OutfitOptions;
-import model.User;
-
-import model.clothing.Top;
-import model.clothing.Bottom;
-import model.clothing.Footwear;
+import model.*;
+import model.clothing.*;
 
 import service.RecommendationEngine;
 
@@ -24,6 +19,10 @@ public class OutfitSelectionPanel extends JPanel {
     private JComboBox<Top> topSelector;
     private JComboBox<Bottom> bottomSelector;
     private JComboBox<Footwear> footwearSelector;
+
+    private CategorySelectionPanel topPanel;
+    private CategorySelectionPanel bottomPanel;
+    private CategorySelectionPanel footwearPanel;
 
     private JLabel scoreLabel;
 
@@ -53,9 +52,17 @@ public class OutfitSelectionPanel extends JPanel {
 
         JLabel title = new JLabel("Select Outfit Components");
 
-        title.setFont(new Font("Arial", Font.BOLD, 22));
+        title.setFont(
+            new Font(
+                "Arial",
+                Font.BOLD,
+                22
+            )
+        );
 
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        title.setAlignmentX(
+            Component.CENTER_ALIGNMENT
+        );
 
         add(title);
 
@@ -63,74 +70,146 @@ public class OutfitSelectionPanel extends JPanel {
 
 
         topSelector = new JComboBox<>(
-            options.getTops().toArray(new Top[0])
+            options.getTops()
+                .toArray(new Top[0])
         );
 
         bottomSelector = new JComboBox<>(
-            options.getBottoms().toArray(new Bottom[0])
+            options.getBottoms()
+                .toArray(new Bottom[0])
         );
 
         footwearSelector = new JComboBox<>(
-            options.getFootwear().toArray(new Footwear[0])
+            options.getFootwear()
+                .toArray(new Footwear[0])
         );
 
 
-        add(
+        topPanel =
             new CategorySelectionPanel(
                 "TOPS",
                 options.getTops(),
                 topSelector
-            )
-        );
+            );
 
-        add(Box.createVerticalStrut(20));
-
-        add(
+        bottomPanel =
             new CategorySelectionPanel(
                 "BOTTOMS",
                 options.getBottoms(),
                 bottomSelector
-            )
-        );
+            );
 
-        add(Box.createVerticalStrut(20));
-
-        add(
+        footwearPanel =
             new CategorySelectionPanel(
                 "FOOTWEAR",
                 options.getFootwear(),
                 footwearSelector
-            )
-        );
+            );
+
+
+        add(topPanel);
+
+        add(Box.createVerticalStrut(20));
+
+        add(bottomPanel);
+
+        add(Box.createVerticalStrut(20));
+
+        add(footwearPanel);
 
         add(Box.createVerticalStrut(20));
 
 
         JButton generateButton = new JButton("Generate Outfit");
 
-        generateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        generateButton.setAlignmentX(
+            Component.CENTER_ALIGNMENT
+        );
 
-        generateButton.addActionListener(e -> generateOutfit());
+        generateButton.addActionListener(
+            e -> generateOutfit()
+        );
 
         add(generateButton);
 
         add(Box.createVerticalStrut(15));
 
 
-        scoreLabel = new JLabel("Recommendation Score: 0");
+        scoreLabel =
+            new JLabel(
+                "Recommendation Score: 0"
+            );
 
-        scoreLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        scoreLabel.setFont(
+            new Font(
+                "Arial",
+                Font.BOLD,
+                18
+            )
+        );
 
-        scoreLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        scoreLabel.setAlignmentX(
+            Component.CENTER_ALIGNMENT
+        );
 
         add(scoreLabel);
 
         add(Box.createVerticalStrut(20));
 
 
-        generatedOutfitPanel = new GeneratedOutfitPanel();
+        generatedOutfitPanel =
+            new GeneratedOutfitPanel();
 
         add(generatedOutfitPanel);
+    }
+
+
+    public void refresh(OutfitOptions options) {
+
+        this.options = options;
+
+
+        topPanel.refresh(
+            options.getTops()
+        );
+
+        bottomPanel.refresh(
+            options.getBottoms()
+        );
+
+        footwearPanel.refresh(
+            options.getFootwear()
+        );
+
+
+        topSelector.removeAllItems();
+
+        for(Top top : options.getTops()) {
+            topSelector.addItem(top);
+        }
+
+
+        bottomSelector.removeAllItems();
+
+        for(Bottom bottom : options.getBottoms()) {
+            bottomSelector.addItem(bottom);
+        }
+
+
+        footwearSelector.removeAllItems();
+
+        for(Footwear footwear : options.getFootwear()) {
+            footwearSelector.addItem(footwear);
+        }
+
+
+        scoreLabel.setText(
+            "Recommendation Score: 0"
+        );
+
+
+        revalidate();
+        repaint();
     }
 
 
@@ -138,26 +217,38 @@ public class OutfitSelectionPanel extends JPanel {
 
         try {
 
-            Outfit selectedOutfit = new Outfit(
-                (Top) topSelector.getSelectedItem(),
-                (Bottom) bottomSelector.getSelectedItem(),
-                (Footwear) footwearSelector.getSelectedItem()
-            );
-
-            int score = recommendationEngine
-                .getOutfitScorer()
-                .scoreOutfit(
-                    selectedOutfit,
-                    user
+            Outfit selectedOutfit =
+                new Outfit(
+                    (Top) topSelector.getSelectedItem(),
+                    (Bottom) bottomSelector.getSelectedItem(),
+                    (Footwear) footwearSelector.getSelectedItem()
                 );
+
+
+            int score =
+                recommendationEngine
+                    .getOutfitScorer()
+                    .scoreOutfit(
+                        selectedOutfit,
+                        user
+                    );
+
 
             selectedOutfit.setScore(score);
 
-            scoreLabel.setText("Recommendation Score: " + score);
 
-            generatedOutfitPanel.display(selectedOutfit);
+            scoreLabel.setText(
+                "Recommendation Score: " + score
+            );
 
-        } catch (Exception ex) {
+
+            generatedOutfitPanel.display(
+                selectedOutfit
+            );
+
+        }
+
+        catch(Exception ex) {
 
             JOptionPane.showMessageDialog(
                 this,
