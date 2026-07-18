@@ -1,7 +1,6 @@
 package db;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 
 public class DBConnectionTest {
 
@@ -9,12 +8,7 @@ public class DBConnectionTest {
 
         try {
 
-            Connection connection =
-                DriverManager.getConnection(
-                        "jdbc:mysql://localhost:3306/",
-                        "root",
-                        "solaire85"
-                );
+            Connection connection = DBConnection.getConnection();
 
             System.out.println("Connected successfully!");
             connection.close();
