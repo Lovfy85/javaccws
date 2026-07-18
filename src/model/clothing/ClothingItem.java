@@ -3,16 +3,21 @@ package model.clothing;
 import model.ClothingStyle;
 
 public abstract class ClothingItem {
-    
+
     protected String id;
+    protected String userId;
     protected String name;
     protected String color;
     protected String brand;
     protected String imagePath;
     protected ClothingStyle style;
 
-    public ClothingItem(String id, String name, String color, String brand, String imagePath, ClothingStyle style){
+
+    public ClothingItem(String id, String userId, String name, String color,
+                         String brand, String imagePath, ClothingStyle style) {
+
         this.id = id;
+        this.userId = userId;
         this.name = name;
         this.color = color;
         this.brand = brand;
@@ -20,32 +25,44 @@ public abstract class ClothingItem {
         this.style = style;
     }
 
-    public String getId(){
+
+    public String getId() {
         return id;
     }
 
-    public String getName(){
+
+    public String getUserId() {
+        return userId;
+    }
+
+
+    public String getName() {
         return name;
     }
 
-    public String getColor(){
+
+    public String getColor() {
         return color;
     }
 
-    public String getBrand(){
+
+    public String getBrand() {
         return brand;
     }
 
-    public String getImagePath(){
+
+    public String getImagePath() {
         return imagePath;
     }
 
-    public ClothingStyle getStyle(){
+
+    public ClothingStyle getStyle() {
         return style;
     }
 
+
     @Override
-    public String toString(){
+    public String toString() {
         return name + "[" + color + "," + brand + "," + style + "]";
     }
 }

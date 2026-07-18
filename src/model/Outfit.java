@@ -9,16 +9,26 @@ import util.ColorMatcher;
 
 public class Outfit {
 
+    private String id;
+    private String userId;
+
     private Top top;
     private Bottom bottom;
     private Footwear footwear;
+
     private int score;
 
-    public Outfit(Top top, Bottom bottom, Footwear footwear) throws InvalidClothingException {
+
+    public Outfit(String id, String userId, Top top, Bottom bottom, Footwear footwear) 
+            throws InvalidClothingException {
+
+        this.id = id;
+        this.userId = userId;
 
         this.top = top;
         this.bottom = bottom;
         this.footwear = footwear;
+
         this.score = 0;
 
         validateOutfit();
@@ -29,7 +39,9 @@ public class Outfit {
 
         if(top == null || bottom == null || footwear == null) {
 
-            throw new InvalidClothingException("An outfit must contain a top, bottom, and footwear.");
+            throw new InvalidClothingException(
+                "An outfit must contain a top, bottom, and footwear."
+            );
         }
 
 
@@ -37,44 +49,67 @@ public class Outfit {
             top.getColor(),
             bottom.getColor())) {
 
-            throw new InvalidClothingException( "Top color is not compatible with bottom color.");
+            throw new InvalidClothingException(
+                "Top color is not compatible with bottom color."
+            );
         }
+
 
         if(!ColorMatcher.isCompatible(
             bottom.getColor(),
             footwear.getColor())) {
 
-            throw new InvalidClothingException( "Bottom color is not compatible with footwear color.");
+            throw new InvalidClothingException(
+                "Bottom color is not compatible with footwear color."
+            );
         }
+
 
         if(!ColorMatcher.isCompatible(
             top.getColor(),
             footwear.getColor())) {
 
-            throw new InvalidClothingException("Top color is not compatible with footwear color.");
+            throw new InvalidClothingException(
+                "Top color is not compatible with footwear color."
+            );
         }
     }
 
+
+    public String getId() {
+        return id;
+    }
+
+
+    public String getUserId() {
+        return userId;
+    }
+
+
     public Top getTop(){
         return top;
-
     }
+
 
     public Bottom getBottom(){
         return bottom;
     }
 
+
     public Footwear getFootwear(){
         return footwear;
     }
+
 
     public int getScore(){
         return score;
     }
 
+
     public void setScore(int score){
         this.score = score;
     }
+
 
     public void display(){
 

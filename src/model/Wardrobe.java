@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Wardrobe {
-    
+
     private List<ClothingItem> items = new ArrayList<>();
+
 
     public void addItem(ClothingItem item) throws InvalidClothingException {
 
@@ -45,12 +46,26 @@ public class Wardrobe {
         items.add(item);
     }
 
+
+    public void removeItem(ClothingItem item){
+        items.remove(item);
+    }
+
+
+    public void clearWardrobe(){
+        items.clear();
+    }
+
+
     public List<ClothingItem> getItems(){
         return items;
     }
 
+
     public void printWardrobe(){
+
         System.out.println("Wardrobe: ");
+
         for (ClothingItem item : items){
             System.out.println("- " + item);
         }
