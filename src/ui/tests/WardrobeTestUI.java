@@ -1,9 +1,14 @@
 package ui.tests;
 
 import model.*;
-import service.RecommendationEngine;
+
+import service.*;
+
 import ui.outfit.OutfitDisplayUI;
-import exception.InvalidClothingException;
+
+import exception.*;
+
+import java.sql.SQLException;
 
 
 public class WardrobeTestUI {
@@ -12,17 +17,7 @@ public class WardrobeTestUI {
 
         try {
 
-            StylesProfile stylesProfile =
-                    new StylesProfile(
-                            "Casual",
-                            "Neutral"
-                    );
-
-
-            Wardrobe wardrobe =
-                    TestDataFactory.createSampleWardrobe();
-
-
+            UserService userService = new UserService();
 
             User user =
                 userService.login(
@@ -31,39 +26,34 @@ public class WardrobeTestUI {
                 );
 
 
+            System.out.println("User: " + user.getName());
 
-            RecommendationEngine engine =
-                    new RecommendationEngine();
+            System.out.println("\nLoaded Wardrobe:");
 
+            user.getWardrobe().printWardrobe();
 
+            RecommendationEngine engine = new RecommendationEngine();
 
-            OutfitOptions options =
-                    engine.getOutfitOptions(
-                            user
-                    );
+            OutfitOptions options = engine.getOutfitOptions(user);
 
-
-
-            OutfitDisplayUI display =
-                    new OutfitDisplayUI(
-                            user,
-                            options,
-                            engine
-                    );
-
-
+            OutfitDisplayUI display = new OutfitDisplayUI(user, options, engine);
 
             display.show();
 
-
-        } catch(InvalidClothingException e) {
-
-            System.out.println(
-                    "Invalid clothing detected: "
-                    + e.getMessage()
-            );
-
         }
+
+        catch(AuthenticationException | SQLException | InvalidClothingException e) {
+
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+
+    public static void main(String[] args) {
+
+        WardrobeTestUI test = new WardrobeTestUI();
+
+        test.runTest();
 
     }
 
