@@ -3,17 +3,23 @@ package service;
 import java.sql.SQLException;
 import java.util.UUID;
 
-import exception.AuthenticationException;
-import exception.UserAlreadyExistsException;
+import exception.*;
+
 import model.*;
+import model.clothing.ClothingItem;
+
 import repository.UserRepository;
+import repository.WardrobeRepository;
 
 public class UserService {
 
     private UserRepository userRepository;
+    private WardrobeRepository wardrobeRepository;  
 
     public UserService() {
+
         userRepository = new UserRepository();
+        wardrobeRepository = new WardrobeRepository();
     }
 
 
@@ -48,17 +54,25 @@ public class UserService {
     }
 
 
-    public User login(String username, String password) throws SQLException, AuthenticationException {
+    public User login(String username, String password) throws SQLException, AuthenticationException, InvalidClothingException {
 
         User user = userRepository.findByUsername(username);
 
-        if (user == null) {
+        if(user == null) {
             throw new AuthenticationException("Invalid username or password.");
         }
 
-        if (!user.getPasswordHash().equals(password)) {
+        if(!user.getPasswordHash().equals(password)) {
             throw new AuthenticationException("Invalid username or password.");
         }
+
+        Wardrobe wardrobe = new Wardrobe();
+
+        for(ClothingItem item : wardrobeRepository.findByUserId(user.getId())) {
+            wardrobe.addItem(item);
+        }
+
+        user.setWardrobe(wardrobe);
 
         return user;
     }

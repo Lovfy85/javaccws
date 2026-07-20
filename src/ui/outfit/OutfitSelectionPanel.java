@@ -299,6 +299,8 @@ public class OutfitSelectionPanel extends JPanel {
 
             Outfit selectedOutfit =
                 new Outfit(
+                    java.util.UUID.randomUUID().toString(),
+                    user.getId(),
                     (Top) topSelector.getSelectedItem(),
                     (Bottom) bottomSelector.getSelectedItem(),
                     (Footwear) footwearSelector.getSelectedItem()

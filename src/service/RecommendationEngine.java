@@ -1,10 +1,9 @@
 package service;
+import java.util.UUID;
 
 import model.*;
-
 import model.clothing.*;
 import exception.InvalidClothingException;
-
 import strategy.*;
 
 public class RecommendationEngine {
@@ -16,25 +15,22 @@ public class RecommendationEngine {
         outfitScorer = new OutfitScorer();
     }
 
-    public OutfitScorer getOutfitScorer(){
-
+    public OutfitScorer getOutfitScorer() {
         return outfitScorer;
     }
 
 
     public Outfit recommendOutfit(User user) throws InvalidClothingException {
 
-        ClothingStyle preferredStyle =
-            ClothingStyle.valueOf(
-                user.getStylesProfile()
-                    .getStyle()
-                    .toUpperCase()
+        RecommendationStrategy strategy =
+            getStrategy(
+                ClothingStyle.valueOf(
+                    user.getStylesProfile()
+                        .getStyle()
+                        .toUpperCase()
+                )
             );
 
-        RecommendationStrategy strategy =
-                getStrategy(
-                    preferredStyle
-                );
 
         OutfitOptions options =
                 strategy.getOutfitOptions(
@@ -50,18 +46,31 @@ public class RecommendationEngine {
                 for(Footwear footwear : options.getFootwear()) {
                     try {
 
-                        Outfit currentOutfit = new Outfit(top, bottom, footwear);
+                        Outfit outfit =
+                            new Outfit(
+                                UUID.randomUUID().toString(),
+                                user.getId(),
+                                top,
+                                bottom,
+                                footwear
+                            );
 
-                        int currentScore = outfitScorer.scoreOutfit(currentOutfit,user);
 
-                        if(currentScore > highestScore) {
+                        int score =
+                            outfitScorer.scoreOutfit(
+                                outfit,
+                                user
+                            );
 
-                            highestScore = currentScore;
-                            currentOutfit.setScore(currentScore);
-                            bestOutfit = currentOutfit;
+
+                        if(score > highestScore) {
+
+                            highestScore = score;
+                            outfit.setScore(score);
+                            bestOutfit = outfit;
+
                         }
                     }
-
                     catch(InvalidClothingException e) {
                     }
                 }
@@ -69,30 +78,37 @@ public class RecommendationEngine {
         }
 
         if(bestOutfit == null) {
-            throw new InvalidClothingException(  "No valid outfit could be generated.");
+            throw new InvalidClothingException("No valid outfit could be generated.");
         }
 
         return bestOutfit;
     }
 
 
-    public OutfitOptions getOutfitOptions(User user) throws InvalidClothingException {
+    public OutfitOptions getOutfitOptions(User user)
+            throws InvalidClothingException {
 
-        ClothingStyle preferredStyle =
+        return getStrategy(
             ClothingStyle.valueOf(
                 user.getStylesProfile()
                     .getStyle()
                     .toUpperCase()
-            );
-
-        RecommendationStrategy strategy = getStrategy(preferredStyle);
-
-        return strategy.getOutfitOptions(user.getWardrobe());
+            )
+        ).getOutfitOptions(
+            user.getWardrobe()
+        );
     }
 
 
-    public Outfit createOutfit(Top top, Bottom bottom, Footwear footwear) throws InvalidClothingException {
-        return new Outfit(top, bottom, footwear);
+    public Outfit createOutfit(Top top, Bottom bottom, Footwear footwear, User user) throws InvalidClothingException {
+
+        return new Outfit(
+            UUID.randomUUID().toString(),
+            user.getId(),
+            top,
+            bottom,
+            footwear
+        );
     }
 
 

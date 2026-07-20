@@ -3,143 +3,70 @@ package ui.tests;
 
 import model.*;
 
-import model.clothing.*;
-
 import repository.OutfitRepository;
+
+import service.RecommendationEngine;
+import service.UserService;
+
 
 public class OutfitRepositoryTest {
 
+
     public static void main(String[] args) {
 
-        OutfitRepository repository =
-                new OutfitRepository();
+        OutfitRepository outfitRepository = new OutfitRepository();
 
+        UserService userService = new UserService();
+
+        RecommendationEngine engine = new RecommendationEngine();
 
         try {
 
+            System.out.println(  "=== OUTFIT REPOSITORY TEST ===");
 
-            System.out.println(
-                    "=== OUTFIT REPOSITORY TEST ==="
-            );
+            User user = userService.login( "Alucrias", "somepassword");
 
+            if(user == null) {
 
-            String outfitId =
-                    "OUTFIT001";
-
-
-            String userId =
-                    "USER002";
-
-
-
-            Top top =
-                    new Top(
-                            "TOP001",
-                            userId,
-                            "Casual T-Shirt",
-                            "Black",
-                            "Nike",
-                            "resources/images/tops/casual_tshirt.jpg",
-                            ClothingStyle.CASUAL,
-                            "SHORT_SLEEVE"
-                    );
-
-
-
-            Bottom bottom =
-                    new Bottom(
-                            "BOTTOM001",
-                            userId,
-                            "Casual Jeans",
-                            "Blue",
-                            "Levis",
-                            "resources/images/bottoms/casual_blue_jeans.jpg",
-                            ClothingStyle.CASUAL,
-                            "SLIM"
-                    );
-
-
-
-            Footwear footwear =
-                    new Footwear(
-                            "SHOE001",
-                            userId,
-                            "Casual Sneakers",
-                            "White",
-                            "Adidas",
-                            "resources/images/footwear/casual_white_sneakers.jpg",
-                            ClothingStyle.CASUAL,
-                            "SNEAKER"
-                    );
-
-
-
-            Outfit outfit =
-                    new Outfit(
-                            outfitId,
-                            userId,
-                            top,
-                            bottom,
-                            footwear
-                    );
-
-
-            outfit.setScore(85);
-
-
-
-            System.out.println(
-                    "\nChecking if outfit already exists..."
-            );
-
-
-            Outfit existingOutfit =
-                    repository.findById(outfitId);
-
-
-
-            if(existingOutfit == null) {
-
-
-                System.out.println(
-                        "\nSaving outfit..."
-                );
-
-
-                repository.save(
-                        outfitId,
-                        userId,
-                        outfit
-                );
-
-
-                System.out.println(
-                        "Outfit saved successfully!"
-                );
+                System.out.println("User not found.");
+                return;
 
             }
 
-            else {
+            System.out.println("Testing user: " + user.getUsername());
 
+            System.out.println("User ID: " + user.getId());
 
-                System.out.println(
-                        "Outfit already exists. Skipping save."
-                );
+            System.out.println("\nLoaded Wardrobe:");
 
-            }
+            System.out.println(user.getWardrobe());
 
+            Outfit outfit = engine.recommendOutfit(user);
 
+            int score = engine.scoreOutfit(outfit, user);
 
+            System.out.println("\nGenerated Outfit:");
 
-            System.out.println(
-                    "\nLoading outfit..."
+            outfit.display();
+
+            System.out.println("Score: " + score);
+
+            System.out.println("\nSaving outfit...");
+
+            outfitRepository.save(
+                outfit.getId(),
+                user.getId(),
+                outfit
             );
 
+            System.out.println("Outfit saved successfully!");
+
+            System.out.println("\nLoading saved outfit...");
 
             Outfit loadedOutfit =
-                    repository.findById(
-                            outfitId
-                    );
+                outfitRepository.findById(
+                        outfit.getId()
+                );
 
 
 
@@ -164,17 +91,14 @@ public class OutfitRepositoryTest {
 
             }
 
-
-
             System.out.println(
                     "\n=== TEST COMPLETE ==="
             );
 
 
+
         }
-
         catch(Exception e) {
-
 
             e.printStackTrace();
 

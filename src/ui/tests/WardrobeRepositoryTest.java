@@ -4,17 +4,24 @@ package ui.tests;
 import model.*;
 import model.clothing.*;
 
-import repository.WardrobeRepository;
+import repository.*;
 
 import java.util.List;
 
 
 public class WardrobeRepositoryTest {
 
+
     public static void main(String[] args) {
+
 
         WardrobeRepository wardrobeRepository =
                 new WardrobeRepository();
+
+
+        UserRepository userRepository =
+                new UserRepository();
+
 
 
         try {
@@ -25,8 +32,41 @@ public class WardrobeRepositoryTest {
             );
 
 
+
+            User user =
+                    userRepository.findByUsername(
+                            "Alucrias"
+                    );
+
+
+            if(user == null) {
+
+                System.out.println(
+                        "User not found."
+                );
+
+                return;
+
+            }
+
+
+
             String userId =
-                    "USER002";
+                    user.getId();
+
+
+
+            System.out.println(
+                    "Testing user: "
+                    + user.getUsername()
+            );
+
+
+            System.out.println(
+                    "User ID: "
+                    + userId
+            );
+
 
 
 
@@ -73,9 +113,11 @@ public class WardrobeRepositoryTest {
 
 
 
+
             System.out.println(
                     "\nChecking existing wardrobe..."
             );
+
 
 
             List<ClothingItem> existingItems =
@@ -91,11 +133,22 @@ public class WardrobeRepositoryTest {
                 );
 
 
-                wardrobeRepository.save(top, userId);
+                wardrobeRepository.save(
+                        top,
+                        userId
+                );
 
-                wardrobeRepository.save(bottom, userId);
 
-                wardrobeRepository.save(footwear, userId);
+                wardrobeRepository.save(
+                        bottom,
+                        userId
+                );
+
+
+                wardrobeRepository.save(
+                        footwear,
+                        userId
+                );
 
 
                 System.out.println(
@@ -114,12 +167,10 @@ public class WardrobeRepositoryTest {
             }
 
 
-
-
-
             System.out.println(
                     "\nLoading wardrobe..."
             );
+
 
 
             List<ClothingItem> items =
@@ -127,25 +178,30 @@ public class WardrobeRepositoryTest {
 
 
 
+
             for(ClothingItem item : items) {
 
 
                 System.out.println(
-                        "- " + item
+                        "- "
+                        + item
                 );
 
 
                 System.out.println(
-                        "Class: " + item.getClass().getSimpleName()
+                        "Class: "
+                        + item.getClass().getSimpleName()
                 );
 
             }
 
 
 
+
             System.out.println(
                     "\n=== TEST COMPLETE ==="
             );
+
 
 
         }

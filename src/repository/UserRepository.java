@@ -146,7 +146,7 @@ public class UserRepository {
             result.getString("password_hash"),
             result.getString("name"),
             profile,
-            new Wardrobe()
+            null
         );
     }
 }

@@ -1,6 +1,7 @@
 package ui.auth;
 
 import exception.AuthenticationException;
+import exception.InvalidClothingException;
 import model.User;
 import service.UserService;
 
@@ -143,7 +144,6 @@ public class LoginPanel extends JPanel {
     }
 
 
-
     private void loginUser() {
 
         try {
@@ -167,7 +167,7 @@ public class LoginPanel extends JPanel {
             // Open WardrobeManagementPanel here
 
 
-        } catch(AuthenticationException | SQLException e) {
+        } catch(AuthenticationException | SQLException | InvalidClothingException e) {
 
             JOptionPane.showMessageDialog(this,e.getMessage());
         }
