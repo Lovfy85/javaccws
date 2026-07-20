@@ -1,22 +1,27 @@
 package ui;
 
-import ui.tests.WardrobeTestUI;
-import ui.tests.ColorMatcherTestUI;
+import javax.swing.*;
+
+import ui.auth.LoginPanel;
 
 public class Menu {
 
     public void start() {
 
-        System.out.println("Starting tests...");
+        JFrame frame = new JFrame("Clothing Capsule Wardrobe System");
 
-        ColorMatcherTestUI colorTest = new ColorMatcherTestUI();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        colorTest.runTest();
+        frame.setSize(500, 600);
 
-        WardrobeTestUI wardrobeTest = new WardrobeTestUI();
+        frame.setExtendedState(JFrame.NORMAL);
 
-        wardrobeTest.runTest();
+        frame.setResizable(false);
 
+        frame.setLocationRelativeTo(null);
+
+        frame.setContentPane(new LoginPanel(frame));
+
+        frame.setVisible(true);
     }
-
 }
