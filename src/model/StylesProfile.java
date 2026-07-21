@@ -5,29 +5,64 @@ public class StylesProfile {
     private String style;
     private String colorPreference;
 
-    public StylesProfile(String style, String colorPreference) {
-        this.style = style;
+
+    public StylesProfile(String style, String colorPreference){
+
+        setStyle(style);
         this.colorPreference = colorPreference;
+
     }
 
-    public String getStyle() {
+
+    public String getStyle(){
         return style;
     }
 
-    public void setStyle(String style) {
+
+    public void setStyle(String style){
+
+        if(style == null)
+            throw new IllegalArgumentException(
+                    "Style cannot be null"
+            );
+
+
+        ClothingStyle.valueOf(
+                style.toUpperCase()
+        );
+
+
         this.style = style;
+
     }
 
-    public String getColorPreference() {
+
+    public String getColorPreference(){
         return colorPreference;
     }
 
-    public void setColorPreference(String colorPreference) {
+
+    public void setColorPreference(String colorPreference){
+
         this.colorPreference = colorPreference;
+
     }
 
-    @Override
-    public String toString() {
-        return style + " | " + colorPreference;
+
+    public ClothingStyle getClothingStyle(){
+
+        return ClothingStyle.valueOf(
+                style.toUpperCase()
+        );
+
     }
+
+
+    @Override
+    public String toString(){
+
+        return style + " | " + colorPreference;
+
+    }
+
 }

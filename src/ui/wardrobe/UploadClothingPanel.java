@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
 import java.util.UUID;
+import javax.imageio.ImageIO;
 
 import model.*;
 import model.clothing.*;
@@ -24,13 +25,17 @@ public class UploadClothingPanel extends JPanel {
     private JComboBox<ClothingStyle> styleBox;
 
     private JLabel imageLabel;
+    private JLabel sleeveLabel,fitLabel,footwearLabel;
+
     private String imagePath;
 
 
     public UploadClothingPanel(JFrame frame,User user){
+
         this.frame=frame;
         this.user=user;
         build();
+
     }
 
 
@@ -42,7 +47,9 @@ public class UploadClothingPanel extends JPanel {
         JPanel p=new JPanel();
         p.setLayout(new BoxLayout(p,BoxLayout.Y_AXIS));
 
+
         p.add(new JLabel("Upload Clothing Item"));
+
 
         nameField=new JTextField();
         brandField=new JTextField();
@@ -56,7 +63,8 @@ public class UploadClothingPanel extends JPanel {
                 new String[]{"TOP","BOTTOM","FOOTWEAR"});
 
 
-        colorBox=new JComboBox<>(new String[]{
+        colorBox=new JComboBox<>(
+                new String[]{
                 "Black","White","Grey","Gray",
                 "Beige","Brown","Navy",
                 "Red","Orange","Yellow","Pink",
@@ -74,12 +82,20 @@ public class UploadClothingPanel extends JPanel {
         addField(p,"Category:",categoryBox);
         addField(p,"Color:",colorBox);
         addField(p,"Style:",styleBox);
-        addField(p,"Sleeve Type:",sleeveField);
-        addField(p,"Fit Type:",fitField);
-        addField(p,"Footwear Type:",footwearField);
+
+
+        sleeveLabel=new JLabel("Sleeve Type:");
+        fitLabel=new JLabel("Fit Type:");
+        footwearLabel=new JLabel("Footwear Type:");
+
+
+        addField(p,sleeveLabel,sleeveField);
+        addField(p,fitLabel,fitField);
+        addField(p,footwearLabel,footwearField);
 
 
         JButton image=new JButton("Choose Image");
+
         imageLabel=new JLabel("No image");
 
 
@@ -104,15 +120,37 @@ public class UploadClothingPanel extends JPanel {
 
 
         add(p);
+
         updateFields();
 
     }
 
 
-    private void addField(JPanel p,String name,Component c){
+    private void addField(
+            JPanel p,
+            String name,
+            Component c){
 
         p.add(new JLabel(name));
-        c.setMaximumSize(new Dimension(400,30));
+
+        c.setMaximumSize(
+                new Dimension(400,30));
+
+        p.add(c);
+
+    }
+
+
+    private void addField(
+            JPanel p,
+            JLabel label,
+            Component c){
+
+        p.add(label);
+
+        c.setMaximumSize(
+                new Dimension(400,30));
+
         p.add(c);
 
     }
@@ -120,17 +158,62 @@ public class UploadClothingPanel extends JPanel {
 
     private void chooseImage(){
 
-        JFileChooser chooser=new JFileChooser();
+        JFileChooser chooser=
+                new JFileChooser();
+
+
+        chooser.setFileFilter(
+                new javax.swing.filechooser.FileNameExtensionFilter(
+                "Images",
+                "png",
+                "jpg",
+                "jpeg",
+                "gif",
+                "webp"
+        ));
+
 
         if(chooser.showOpenDialog(this)
                 ==JFileChooser.APPROVE_OPTION){
 
-            File file=chooser.getSelectedFile();
+            File file=
+                    chooser.getSelectedFile();
 
-            imagePath=file.getAbsolutePath();
-            imageLabel.setText(file.getName());
+
+            try{
+
+                Image img=
+                        ImageIO.read(file);
+
+
+                img=img.getScaledInstance(
+                        150,
+                        150,
+                        Image.SCALE_SMOOTH);
+
+
+                imageLabel.setIcon(
+                        new ImageIcon(img));
+
+
+                imageLabel.setText(
+                        file.getName());
+
+
+                imagePath=
+                        file.getAbsolutePath();
+
+
+            }catch(Exception e){
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Invalid image file.");
+
+            }
 
         }
+
     }
 
 
@@ -138,8 +221,8 @@ public class UploadClothingPanel extends JPanel {
 
         try{
 
-            if(nameField.getText().trim().isEmpty()
-                    ||brandField.getText().trim().isEmpty()
+            if(nameField.getText().isBlank()
+                    ||brandField.getText().isBlank()
                     ||imagePath==null)
 
                 throw new InvalidClothingException(
@@ -147,14 +230,19 @@ public class UploadClothingPanel extends JPanel {
                 );
 
 
-            String id=UUID.randomUUID().toString();
+            String id=
+                    UUID.randomUUID().toString();
+
 
             String category=
-                    categoryBox.getSelectedItem().toString();
+                    categoryBox
+                    .getSelectedItem()
+                    .toString();
 
 
             ClothingStyle style=
-                    (ClothingStyle)styleBox.getSelectedItem();
+                    (ClothingStyle)
+                    styleBox.getSelectedItem();
 
 
             ClothingItem item;
@@ -207,8 +295,7 @@ public class UploadClothingPanel extends JPanel {
 
             JOptionPane.showMessageDialog(
                     this,
-                    "Upload successful."
-            );
+                    "Upload successful.");
 
 
             back();
@@ -218,8 +305,7 @@ public class UploadClothingPanel extends JPanel {
 
             JOptionPane.showMessageDialog(
                     this,
-                    e.getMessage()
-            );
+                    e.getMessage());
 
         }
 
@@ -228,11 +314,34 @@ public class UploadClothingPanel extends JPanel {
 
     private void updateFields(){
 
-        String c = categoryBox.getSelectedItem().toString();
+        String c=
+                categoryBox
+                .getSelectedItem()
+                .toString();
 
-        sleeveField.setEditable(c.equals("TOP"));
-        fitField.setEditable(c.equals("BOTTOM"));
-        footwearField.setEditable(c.equals("FOOTWEAR"));
+
+        boolean top=
+                c.equals("TOP");
+
+        boolean bottom=
+                c.equals("BOTTOM");
+
+        boolean footwear=
+                c.equals("FOOTWEAR");
+
+
+        sleeveLabel.setVisible(top);
+        sleeveField.setVisible(top);
+
+        fitLabel.setVisible(bottom);
+        fitField.setVisible(bottom);
+
+        footwearLabel.setVisible(footwear);
+        footwearField.setVisible(footwear);
+
+
+        revalidate();
+        repaint();
 
     }
 
@@ -240,8 +349,8 @@ public class UploadClothingPanel extends JPanel {
     private void back(){
 
         frame.setContentPane(
-                new WardrobeManagementPanel(frame,user)
-        );
+                new WardrobeManagementPanel(
+                        frame,user));
 
         frame.revalidate();
         frame.repaint();

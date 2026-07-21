@@ -8,19 +8,17 @@ import model.clothing.ClothingItem;
 import util.ColorMatcher;
 import util.ImageLoader;
 
+public class ClothingCardPanel extends JPanel{
 
-public class ClothingCardPanel extends JPanel {
-
-    private JLabel imageLabel;
-    private JLabel nameLabel;
-    private JLabel brandLabel;
-    private JLabel colorLabel;
-    private JLabel categoryLabel;
-    private JLabel styleLabel;
+    private JLabel image=new JLabel();
+    private JLabel name=new JLabel();
+    private JLabel brand=new JLabel();
+    private JLabel color=new JLabel();
+    private JLabel category=new JLabel();
+    private JLabel style=new JLabel();
 
 
     public ClothingCardPanel(ClothingItem item){
-
         build();
         updateItem(item);
     }
@@ -34,147 +32,111 @@ public class ClothingCardPanel extends JPanel {
         setBorder(
             BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(
-                    new Color(210,210,210)
-                ),
+                    new Color(210,210,210)),
                 new EmptyBorder(15,15,15,15)
             )
         );
 
 
-        imageLabel = new JLabel();
-
-        imageLabel.setPreferredSize(
-            new Dimension(170,170)
-        );
+        image.setPreferredSize(
+                new Dimension(170,170));
 
 
-        JPanel info = new JPanel();
+        JPanel info=new JPanel(
+                new GridLayout(0,1));
 
         info.setBackground(Color.WHITE);
 
-        info.setLayout(
-            new BoxLayout(
-                info,
-                BoxLayout.Y_AXIS
-            )
-        );
+
+        name.setFont(
+                new Font("Arial",Font.BOLD,24));
 
 
-        nameLabel = new JLabel();
-
-        nameLabel.setFont(
-            new Font(
-                "Arial",
-                Font.BOLD,
-                24
-            )
-        );
-
-
-        Font font =
-            new Font(
+        Font f=new Font(
                 "Arial",
                 Font.PLAIN,
-                16
-            );
+                16);
+
+        brand.setFont(f);
+        color.setFont(f);
+        category.setFont(f);
+        style.setFont(f);
 
 
-        brandLabel = new JLabel();
-        colorLabel = new JLabel();
-        categoryLabel = new JLabel();
-        styleLabel = new JLabel();
+        info.add(name);
+        info.add(brand);
+        info.add(color);
+        info.add(category);
+        info.add(style);
 
 
-        brandLabel.setFont(font);
-        colorLabel.setFont(font);
-        categoryLabel.setFont(font);
-        styleLabel.setFont(font);
-
-
-        info.add(nameLabel);
-        info.add(Box.createVerticalStrut(8));
-        info.add(brandLabel);
-        info.add(colorLabel);
-        info.add(categoryLabel);
-        info.add(styleLabel);
-
-
-        add(
-            imageLabel,
-            BorderLayout.WEST
-        );
-
-        add(
-            info,
-            BorderLayout.CENTER
-        );
+        add(image,BorderLayout.WEST);
+        add(info,BorderLayout.CENTER);
 
 
         setPreferredSize(
-            new Dimension(820,220)
-        );
+                new Dimension(820,220));
 
         setMaximumSize(
-            new Dimension(820,220)
-        );
+                new Dimension(820,220));
 
-        setAlignmentX(
-            Component.CENTER_ALIGNMENT
-        );
     }
 
 
     public void updateItem(ClothingItem item){
 
-        ImageIcon icon =
-            ImageLoader.load(
-                item.getImagePath()
-            );
+        if(item==null){
+
+            image.setIcon(null);
+
+            name.setText(
+                    "No matching clothing available");
+
+            brand.setText("");
+            color.setText("");
+            category.setText("");
+            style.setText("");
+
+            return;
+        }
 
 
-        Image img =
-            icon.getImage()
-            .getScaledInstance(
-                160,
-                160,
-                Image.SCALE_SMOOTH
-            );
+        ImageIcon icon=
+                ImageLoader.load(
+                        item.getImagePath());
 
 
-        imageLabel.setIcon(
-            new ImageIcon(img)
+        image.setIcon(
+                new ImageIcon(
+                    icon.getImage()
+                    .getScaledInstance(
+                        160,
+                        160,
+                        Image.SCALE_SMOOTH)
+                )
         );
 
 
-        nameLabel.setText(
-            item.getName()
-        );
+        name.setText(
+                item.getName());
 
+        brand.setText(
+                "Brand: "+item.getBrand());
 
-        brandLabel.setText(
-            "Brand: " + item.getBrand()
-        );
+        color.setText(
+                "Color: "+item.getColor());
 
+        category.setText(
+                "Color Category: "+
+                ColorMatcher.getColorCategory(
+                        item.getColor()));
 
-        colorLabel.setText(
-            "Color: " + item.getColor()
-        );
-
-
-        categoryLabel.setText(
-            "Color Category: "
-            + ColorMatcher.getColorCategory(
-                item.getColor()
-            )
-        );
-
-
-        styleLabel.setText(
-            "Style: " + item.getStyle()
-        );
+        style.setText(
+                "Style: "+item.getStyle());
 
 
         revalidate();
         repaint();
+
     }
 }

@@ -1,4 +1,5 @@
 package service;
+
 import java.util.UUID;
 
 import model.*;
@@ -10,41 +11,47 @@ public class RecommendationEngine {
 
     private OutfitScorer outfitScorer;
 
-    public RecommendationEngine() {
 
-        outfitScorer = new OutfitScorer();
+    public RecommendationEngine(){
+        outfitScorer=new OutfitScorer();
     }
 
-    public OutfitScorer getOutfitScorer() {
+
+    public OutfitScorer getOutfitScorer(){
         return outfitScorer;
     }
 
 
-    public Outfit recommendOutfit(User user) throws InvalidClothingException {
+    public Outfit recommendOutfit(User user)
+            throws InvalidClothingException {
+
+
+        ClothingStyle style =
+                user.getStylesProfile()
+                .getClothingStyle();
+
 
         RecommendationStrategy strategy =
-            getStrategy(
-                ClothingStyle.valueOf(
-                    user.getStylesProfile()
-                        .getStyle()
-                        .toUpperCase()
-                )
-            );
+                getStrategy(style);
 
 
         OutfitOptions options =
                 strategy.getOutfitOptions(
-                    user.getWardrobe()
+                        getStyledWardrobe(user,style)
                 );
 
-        Outfit bestOutfit = null;
 
-        int highestScore = -1;
+        Outfit best=null;
+        int highest=-1;
 
-        for(Top top : options.getTops()) {
-            for(Bottom bottom : options.getBottoms()) {
-                for(Footwear footwear : options.getFootwear()) {
-                    try {
+
+        for(Top top:options.getTops()){
+
+            for(Bottom bottom:options.getBottoms()){
+
+                for(Footwear footwear:options.getFootwear()){
+
+                    try{
 
                         Outfit outfit =
                             new Outfit(
@@ -63,66 +70,121 @@ public class RecommendationEngine {
                             );
 
 
-                        if(score > highestScore) {
+                        if(score>highest){
 
-                            highestScore = score;
+                            highest=score;
                             outfit.setScore(score);
-                            bestOutfit = outfit;
+                            best=outfit;
 
                         }
-                    }
-                    catch(InvalidClothingException e) {
-                    }
+
+
+                    }catch(InvalidClothingException ignored){}
                 }
             }
         }
 
-        if(bestOutfit == null) {
-            throw new InvalidClothingException("No valid outfit could be generated.");
-        }
 
-        return bestOutfit;
+        if(best==null)
+
+            throw new InvalidClothingException(
+                    "No valid outfit could be generated."
+            );
+
+
+        return best;
     }
+
 
 
     public OutfitOptions getOutfitOptions(User user)
             throws InvalidClothingException {
 
-        return getStrategy(
-            ClothingStyle.valueOf(
+
+        ClothingStyle style =
                 user.getStylesProfile()
-                    .getStyle()
-                    .toUpperCase()
-            )
-        ).getOutfitOptions(
-            user.getWardrobe()
-        );
+                .getClothingStyle();
+
+
+        return getStrategy(style)
+                .getOutfitOptions(
+                    getStyledWardrobe(user,style)
+                );
     }
 
 
-    public Outfit createOutfit(Top top, Bottom bottom, Footwear footwear, User user) throws InvalidClothingException {
+
+    private Wardrobe getStyledWardrobe(
+            User user,
+            ClothingStyle style
+    ) throws InvalidClothingException {
+
+        Wardrobe filtered =
+                new Wardrobe();
+
+
+        for(ClothingItem item:
+                user.getWardrobe().getItems()){
+
+
+            if(item.getStyle()==style)
+
+                filtered.addItem(item);
+
+        }
+
+
+        return filtered;
+
+    }
+
+
+
+    public Outfit createOutfit(
+            Top top,
+            Bottom bottom,
+            Footwear footwear,
+            User user
+    )
+            throws InvalidClothingException {
+
 
         return new Outfit(
-            UUID.randomUUID().toString(),
-            user.getId(),
-            top,
-            bottom,
-            footwear
+                UUID.randomUUID().toString(),
+                user.getId(),
+                top,
+                bottom,
+                footwear
         );
+
     }
 
 
-    public int scoreOutfit(Outfit outfit, User user) {
 
-        int score = outfitScorer.scoreOutfit(outfit, user);
+    public int scoreOutfit(
+            Outfit outfit,
+            User user
+    ){
+
+        int score =
+                outfitScorer.scoreOutfit(
+                        outfit,
+                        user
+                );
+
         outfit.setScore(score);
+
         return score;
+
     }
 
 
-    private RecommendationStrategy getStrategy(ClothingStyle style) {
 
-        switch(style) {
+    private RecommendationStrategy getStrategy(
+            ClothingStyle style
+    ){
+
+        switch(style){
 
             case CASUAL:
                 return new CasualStrategy();
@@ -141,6 +203,9 @@ public class RecommendationEngine {
 
             default:
                 return new CasualStrategy();
+
         }
+
     }
+
 }
