@@ -222,7 +222,7 @@ public class WardrobeManagementPanel extends JPanel {
 
     }
 
-        private JPanel score(){
+    private JPanel score(){
 
         JPanel p=box();
 
@@ -273,6 +273,9 @@ public class WardrobeManagementPanel extends JPanel {
         p.add(row);
 
 
+        scoreLabel.setHorizontalAlignment(
+                SwingConstants.CENTER);
+
         scoreLabel.setAlignmentX(
                 Component.CENTER_ALIGNMENT);
 
@@ -282,10 +285,15 @@ public class WardrobeManagementPanel extends JPanel {
 
         descriptionPanel=new JPanel();
 
+
         descriptionPanel.setLayout(
                 new BoxLayout(
                         descriptionPanel,
                         BoxLayout.Y_AXIS));
+
+
+        descriptionPanel.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
 
 
         JLabel description=
@@ -304,11 +312,16 @@ public class WardrobeManagementPanel extends JPanel {
                 "</center></html>");
 
 
+        description.setHorizontalAlignment(
+                SwingConstants.CENTER);
+
+
         description.setAlignmentX(
                 Component.CENTER_ALIGNMENT);
 
 
         descriptionPanel.add(description);
+
 
         descriptionPanel.setVisible(false);
 
@@ -352,11 +365,30 @@ public class WardrobeManagementPanel extends JPanel {
 
     private void upload(){
 
-        frame.setContentPane(
-                new UploadClothingPanel(
-                        frame,user));
+        JDialog dialog=
+                new JDialog(
+                        frame,
+                        "Upload Clothing Item",
+                        true);
 
-        refreshFrame();
+
+        dialog.setContentPane(
+                new UploadClothingPanel(
+                        frame,
+                        user,
+                        dialog));
+
+
+        dialog.setSize(
+                450,
+                600);
+
+
+        dialog.setResizable(false);
+
+        dialog.setLocationRelativeTo(frame);
+
+        dialog.setVisible(true);
 
     }
 
