@@ -1,7 +1,6 @@
 package ui;
 
 import javax.swing.*;
-
 import ui.auth.LoginPanel;
 
 public class Menu {
@@ -12,9 +11,7 @@ public class Menu {
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        frame.setSize(500, 600);
-
-        frame.setExtendedState(JFrame.NORMAL);
+        frame.setSize(500,400);
 
         frame.setResizable(false);
 

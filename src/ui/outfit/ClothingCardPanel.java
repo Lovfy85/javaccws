@@ -2,95 +2,53 @@ package ui.outfit;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
 import java.awt.*;
 
 import model.clothing.ClothingItem;
+import util.ColorMatcher;
+import util.ImageLoader;
 
-import util.*;
 
 public class ClothingCardPanel extends JPanel {
 
-    private ClothingItem item;
+    private JLabel imageLabel;
+    private JLabel nameLabel;
+    private JLabel brandLabel;
+    private JLabel colorLabel;
+    private JLabel categoryLabel;
+    private JLabel styleLabel;
 
-    public ClothingCardPanel(ClothingItem item) {
 
-        this.item = item;
+    public ClothingCardPanel(ClothingItem item){
 
-        setLayout(new BorderLayout(30, 10));
+        build();
+        updateItem(item);
+    }
 
+
+    private void build(){
+
+        setLayout(new BorderLayout(20,10));
         setBackground(Color.WHITE);
 
         setBorder(
             BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(210, 210, 210)),
-                new EmptyBorder(20, 20, 20, 20)
+                BorderFactory.createLineBorder(
+                    new Color(210,210,210)
+                ),
+                new EmptyBorder(15,15,15,15)
             )
         );
 
-        add(createImageLabel(), BorderLayout.WEST);
 
-        add(createInfoPanel(), BorderLayout.CENTER);
-
-        setPreferredSize(new Dimension(820, 240));
-
-        setMaximumSize(new Dimension(820, 240));
-    }
-
-
-    private JLabel createImageLabel() {
-
-        ImageIcon originalIcon = ImageLoader.load(item.getImagePath());
-
-
-        int maxImageWidth = 180;
-        int maxImageHeight = 180;
-
-
-        int originalWidth = originalIcon.getIconWidth();
-
-        int originalHeight = originalIcon.getIconHeight();
-
-
-        double scale = Math.min(
-            (double) maxImageWidth / originalWidth,
-            (double) maxImageHeight / originalHeight
-        );
-
-
-        int scaledWidth = (int) (originalWidth * scale);
-
-        int scaledHeight = (int) (originalHeight * scale);
-
-
-        Image scaledImage = originalIcon
-                .getImage()
-                .getScaledInstance(
-                    scaledWidth,
-                    scaledHeight,
-                    Image.SCALE_SMOOTH
-                );
-
-
-        JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
-
+        imageLabel = new JLabel();
 
         imageLabel.setPreferredSize(
-            new Dimension(
-                scaledWidth,
-                scaledHeight
-            )
+            new Dimension(170,170)
         );
 
 
-        return imageLabel;
-    }
-
-
-    private JPanel createInfoPanel() {
-
         JPanel info = new JPanel();
-
 
         info.setBackground(Color.WHITE);
 
@@ -102,52 +60,121 @@ public class ClothingCardPanel extends JPanel {
         );
 
 
-        JLabel nameLabel = new JLabel(item.getName());
+        nameLabel = new JLabel();
 
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 26));
+        nameLabel.setFont(
+            new Font(
+                "Arial",
+                Font.BOLD,
+                24
+            )
+        );
 
 
-        JLabel brandLabel = new JLabel(
+        Font font =
+            new Font(
+                "Arial",
+                Font.PLAIN,
+                16
+            );
+
+
+        brandLabel = new JLabel();
+        colorLabel = new JLabel();
+        categoryLabel = new JLabel();
+        styleLabel = new JLabel();
+
+
+        brandLabel.setFont(font);
+        colorLabel.setFont(font);
+        categoryLabel.setFont(font);
+        styleLabel.setFont(font);
+
+
+        info.add(nameLabel);
+        info.add(Box.createVerticalStrut(8));
+        info.add(brandLabel);
+        info.add(colorLabel);
+        info.add(categoryLabel);
+        info.add(styleLabel);
+
+
+        add(
+            imageLabel,
+            BorderLayout.WEST
+        );
+
+        add(
+            info,
+            BorderLayout.CENTER
+        );
+
+
+        setPreferredSize(
+            new Dimension(820,220)
+        );
+
+        setMaximumSize(
+            new Dimension(820,220)
+        );
+
+        setAlignmentX(
+            Component.CENTER_ALIGNMENT
+        );
+    }
+
+
+    public void updateItem(ClothingItem item){
+
+        ImageIcon icon =
+            ImageLoader.load(
+                item.getImagePath()
+            );
+
+
+        Image img =
+            icon.getImage()
+            .getScaledInstance(
+                160,
+                160,
+                Image.SCALE_SMOOTH
+            );
+
+
+        imageLabel.setIcon(
+            new ImageIcon(img)
+        );
+
+
+        nameLabel.setText(
+            item.getName()
+        );
+
+
+        brandLabel.setText(
             "Brand: " + item.getBrand()
         );
 
 
-        JLabel colorLabel = new JLabel(
-            "Color Choice: " + item.getColor()
+        colorLabel.setText(
+            "Color: " + item.getColor()
         );
 
 
-        JLabel colorCategoryLabel = new JLabel(
-            "Color Category: " + ColorMatcher.getColorCategory(item.getColor())
+        categoryLabel.setText(
+            "Color Category: "
+            + ColorMatcher.getColorCategory(
+                item.getColor()
+            )
         );
 
 
-        JLabel styleLabel = new JLabel(
-            "Style Category: " + item.getStyle()
+        styleLabel.setText(
+            "Style: " + item.getStyle()
         );
 
 
-        Font detailFont = new Font("Arial", Font.PLAIN, 18);
-
-
-        brandLabel.setFont(detailFont);
-        colorLabel.setFont(detailFont);
-        colorCategoryLabel.setFont(detailFont);
-        styleLabel.setFont(detailFont);
-
-
-        info.add(nameLabel);
-
-        info.add(Box.createVerticalStrut(10));
-
-        info.add(brandLabel);
-
-        info.add(colorLabel);
-
-        info.add(colorCategoryLabel);
-
-        info.add(styleLabel);
-
-        return info;
+        revalidate();
+        repaint();
     }
 }

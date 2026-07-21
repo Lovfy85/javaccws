@@ -11,10 +11,9 @@ public class UserInfoPanel extends JPanel {
     private JComboBox<String> styleSelector;
     private JComboBox<String> colorSelector;
 
-    public UserInfoPanel(User user, OutfitDisplayUI displayUI) {
+    public UserInfoPanel(User user, Runnable refreshAction) {
 
-        setBackground(new Color(240, 240, 240));
-
+        setBackground(new Color(240,240,240));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 
@@ -22,19 +21,27 @@ public class UserInfoPanel extends JPanel {
             "User: " + user.getName()
         );
 
-        userLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        userLabel.setFont(
+            new Font("Arial", Font.PLAIN, 18)
+        );
 
-        userLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        userLabel.setAlignmentX(
+            Component.CENTER_ALIGNMENT
+        );
 
 
         add(userLabel);
 
-        add(Box.createVerticalStrut(10));
+        add(
+            Box.createVerticalStrut(10)
+        );
 
 
         JPanel preferencePanel = new JPanel();
 
-        preferencePanel.setBackground(new Color(240, 240, 240));
+        preferencePanel.setBackground(
+            new Color(240,240,240)
+        );
 
         preferencePanel.setLayout(
             new FlowLayout(
@@ -43,7 +50,10 @@ public class UserInfoPanel extends JPanel {
         );
 
 
-        JLabel styleLabel = new JLabel("Style:");
+        JLabel styleLabel = new JLabel(
+            "Style:"
+        );
+
 
         styleSelector = new JComboBox<>(
             new String[]{
@@ -55,6 +65,7 @@ public class UserInfoPanel extends JPanel {
             }
         );
 
+
         styleSelector.setSelectedItem(
             user.getStylesProfile()
                 .getStyle()
@@ -62,7 +73,10 @@ public class UserInfoPanel extends JPanel {
         );
 
 
-        JLabel colorLabel = new JLabel("Color Preference:");
+        JLabel colorLabel = new JLabel(
+            "Color Preference:"
+        );
+
 
         colorSelector = new JComboBox<>(
             new String[]{
@@ -73,6 +87,7 @@ public class UserInfoPanel extends JPanel {
             }
         );
 
+
         colorSelector.setSelectedItem(
             user.getStylesProfile()
                 .getColorPreference()
@@ -80,38 +95,46 @@ public class UserInfoPanel extends JPanel {
 
 
         preferencePanel.add(styleLabel);
-
         preferencePanel.add(styleSelector);
-
-        preferencePanel.add(Box.createHorizontalStrut(20));
-
+        preferencePanel.add(
+            Box.createHorizontalStrut(20)
+        );
         preferencePanel.add(colorLabel);
-
         preferencePanel.add(colorSelector);
 
 
         add(preferencePanel);
 
-        JButton updateButton = new JButton("Update Preferences");
+
+        JButton updateButton =
+            new JButton(
+                "Update Preferences"
+            );
 
 
         updateButton.addActionListener(e -> {
 
             user.getStylesProfile()
                 .setStyle(
-                    styleSelector.getSelectedItem()
+                    styleSelector
+                        .getSelectedItem()
                         .toString()
                 );
 
 
             user.getStylesProfile()
                 .setColorPreference(
-                    colorSelector.getSelectedItem()
+                    colorSelector
+                        .getSelectedItem()
                         .toString()
                 );
 
 
-            displayUI.refreshOutfitOptions();
+            if(refreshAction != null) {
+
+                refreshAction.run();
+
+            }
 
 
             JOptionPane.showMessageDialog(
@@ -121,7 +144,9 @@ public class UserInfoPanel extends JPanel {
         });
 
 
-        updateButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        updateButton.setAlignmentX(
+            Component.CENTER_ALIGNMENT
+        );
 
 
         add(updateButton);

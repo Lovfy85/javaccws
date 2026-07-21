@@ -71,10 +71,9 @@ public class OutfitDisplayUI {
         mainPanel.add(
             new UserInfoPanel(
                 user,
-                this
+                this::refreshOutfitOptions
             )
         );
-
 
         mainPanel.add(Box.createVerticalStrut(30));
 
@@ -125,10 +124,12 @@ public class OutfitDisplayUI {
                     );
 
 
-            outfitSelectionPanel
-                .refresh(
+            if(outfitSelectionPanel != null) {
+
+                outfitSelectionPanel.refresh(
                     options
                 );
+            }
 
         }
 

@@ -4,6 +4,7 @@ import exception.AuthenticationException;
 import exception.InvalidClothingException;
 import model.User;
 import service.UserService;
+import ui.wardrobe.WardrobeManagementPanel;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -151,9 +152,7 @@ public class LoginPanel extends JPanel {
             User user =
                 userService.login(
                     usernameField.getText().trim(),
-                    new String(
-                        passwordField.getPassword()
-                    )
+                    new String(passwordField.getPassword())
                 );
 
 
@@ -163,13 +162,29 @@ public class LoginPanel extends JPanel {
             );
 
 
-            // Next stage:
-            // Open WardrobeManagementPanel here
+            frame.setResizable(true);
+
+            frame.setContentPane(
+                new WardrobeManagementPanel(
+                    frame,
+                    user
+                )
+            );
+
+            frame.setExtendedState(
+                JFrame.MAXIMIZED_BOTH
+            );
+
+            frame.revalidate();
+            frame.repaint();
 
 
         } catch(AuthenticationException | SQLException | InvalidClothingException e) {
 
-            JOptionPane.showMessageDialog(this,e.getMessage());
+            JOptionPane.showMessageDialog(
+                this,
+                e.getMessage()
+            );
         }
     }
 }
