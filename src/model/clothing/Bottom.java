@@ -19,4 +19,9 @@ public class Bottom extends ClothingItem {
     public String getFitType() {
         return fitType;
     }
+
+
+    public void setFitType(String fitType) {
+        this.fitType = fitType;
+    }
 }

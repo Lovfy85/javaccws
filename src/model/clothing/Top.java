@@ -19,4 +19,9 @@ public class Top extends ClothingItem {
     public String getSleeveType() {
         return sleeveType;
     }
+
+
+    public void setSleeveType(String sleeveType) {
+        this.sleeveType = sleeveType;
+    }
 }

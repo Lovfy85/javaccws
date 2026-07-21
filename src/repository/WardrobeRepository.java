@@ -1,260 +1,227 @@
 package repository;
 
 import db.DBConnection;
-
 import model.*;
 import model.clothing.*;
 
 import java.sql.*;
-
 import java.util.*;
 
 public class WardrobeRepository {
 
 
-    public void save(ClothingItem item, String userId) throws SQLException {
+    public void save(ClothingItem item,String userId)throws SQLException{
 
-
-        String sql = """
-                INSERT INTO clothing_items
-                (id, user_id, category, name, color, brand, image_path, style,
-                 sleeve_type, fit_type, footwear_type)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """;
-
-
-        try(Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql)) {
-
-
-            statement.setString(1, item.getId());
-            statement.setString(2, userId);
-            statement.setString(3, getCategory(item));
-            statement.setString(4, item.getName());
-            statement.setString(5, item.getColor());
-            statement.setString(6, item.getBrand());
-            statement.setString(7, item.getImagePath());
-            statement.setString(8, item.getStyle().name());
-
-
-            if(item instanceof Top top) {
-
-                statement.setString(9, top.getSleeveType());
-                statement.setString(10, null);
-                statement.setString(11, null);
-
-            }
-
-            else if(item instanceof Bottom bottom) {
-
-                statement.setString(9, null);
-                statement.setString(10, bottom.getFitType());
-                statement.setString(11, null);
-
-            }
-
-            else if(item instanceof Footwear footwear) {
-
-                statement.setString(9, null);
-                statement.setString(10, null);
-                statement.setString(11, footwear.getType());
-
-            }
-
-            statement.executeUpdate();
-
-        }
-
-    }
-
-
-    public List<ClothingItem> findByUserId(String userId) throws SQLException {
-
-        List<ClothingItem> items = new ArrayList<>();
-
-        String sql = """
-            SELECT *
-            FROM clothing_items
-            WHERE user_id = ?
+        String sql="""
+            INSERT INTO clothing_items
+            (id,user_id,category,name,color,brand,image_path,style,
+             sleeve_type,fit_type,footwear_type)
+            VALUES(?,?,?,?,?,?,?,?,?,?,?)
             """;
 
 
-        try(Connection connection = DBConnection.getConnection();
+        try(Connection c=DBConnection.getConnection();
+            PreparedStatement s=c.prepareStatement(sql)){
 
-            PreparedStatement statement = connection.prepareStatement(sql)) {
+            s.setString(1,item.getId());
+            s.setString(2,userId);
+            s.setString(3,getCategory(item));
+            s.setString(4,item.getName());
+            s.setString(5,item.getColor());
+            s.setString(6,item.getBrand());
+            s.setString(7,item.getImagePath());
+            s.setString(8,item.getStyle().name());
 
-            statement.setString(1, userId);
+            setExtraFields(s,item,9);
 
-            ResultSet result = statement.executeQuery();
+            s.executeUpdate();
+        }
+    }
 
-            while(result.next()) {
 
-                items.add(mapClothingItem(result));
 
-            }
+    public void update(ClothingItem item)throws SQLException{
 
+        String sql="""
+            UPDATE clothing_items
+            SET name=?,brand=?,image_path=?,style=?,
+                sleeve_type=?,fit_type=?,footwear_type=?
+            WHERE id=?
+            """;
+
+
+        try(Connection c=DBConnection.getConnection();
+            PreparedStatement s=c.prepareStatement(sql)){
+
+            s.setString(1,item.getName());
+            s.setString(2,item.getBrand());
+            s.setString(3,item.getImagePath());
+            s.setString(4,item.getStyle().name());
+
+            setExtraFields(s,item,5);
+
+            s.setString(8,item.getId());
+
+            s.executeUpdate();
+        }
+    }
+
+
+
+    public List<ClothingItem> findByUserId(String userId) throws SQLException{
+
+        List<ClothingItem> items=new ArrayList<>();
+
+        String sql="""
+            SELECT *
+            FROM clothing_items
+            WHERE user_id=?
+            """;
+
+
+        try(Connection c=DBConnection.getConnection();
+            PreparedStatement s=c.prepareStatement(sql)){
+
+            s.setString(1,userId);
+
+            ResultSet r=s.executeQuery();
+
+            while(r.next())
+                items.add(mapClothingItem(r));
         }
 
         return items;
-
     }
 
 
-    public ClothingItem findByClothingId(String clothingId) throws SQLException {
 
-        String sql = """
+    public ClothingItem findByClothingId(String id) throws SQLException{
+
+        String sql="""
             SELECT *
             FROM clothing_items
-            WHERE id = ?
+            WHERE id=?
             """;
 
-        try(Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql)) {
 
+        try(Connection c=DBConnection.getConnection();
+            PreparedStatement s=c.prepareStatement(sql)){
 
-            statement.setString(1, clothingId);
+            s.setString(1,id);
 
+            ResultSet r=s.executeQuery();
 
-            ResultSet result = statement.executeQuery();
-
-
-            if(result.next()) {
-
-                return mapClothingItem(result);
-
-            }
-
+            if(r.next())
+                return mapClothingItem(r);
         }
 
         return null;
-
     }
 
 
-    public void delete(String clothingId) throws SQLException {
 
+    public void delete(String id)throws SQLException{
 
-        String sql = """
+        String sql="""
             DELETE FROM clothing_items
-            WHERE id = ?
+            WHERE id=?
             """;
 
 
-        try(Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(sql)) {
+        try(Connection c=DBConnection.getConnection();
+            PreparedStatement s=c.prepareStatement(sql)){
 
-
-            statement.setString(1, clothingId);
-
-            statement.executeUpdate();
-
+            s.setString(1,id);
+            s.executeUpdate();
         }
-
     }
 
 
-    private String getCategory(ClothingItem item) {
 
-        if(item instanceof Top) {
+    private void setExtraFields(PreparedStatement s, ClothingItem item, int start)throws SQLException{
 
+        if(item instanceof Top top){
+
+            s.setString(start,top.getSleeveType());
+            s.setString(start+1,null);
+            s.setString(start+2,null);
+
+        }
+
+        else if(item instanceof Bottom bottom){
+
+            s.setString(start,null);
+            s.setString(start+1,bottom.getFitType());
+            s.setString(start+2,null);
+
+        }
+
+        else if(item instanceof Footwear footwear){
+
+            s.setString(start,null);
+            s.setString(start+1,null);
+            s.setString(start+2,footwear.getType());
+
+        }
+    }
+
+
+    private String getCategory(ClothingItem item){
+
+        if(item instanceof Top)
             return "TOP";
 
-        }
-
-        if(item instanceof Bottom) {
-
+        if(item instanceof Bottom)
             return "BOTTOM";
 
-        }
-
-        if(item instanceof Footwear) {
-
+        if(item instanceof Footwear)
             return "FOOTWEAR";
 
-        }
-
         return "UNKNOWN";
-
     }
 
 
-    private ClothingItem mapClothingItem(ResultSet result) throws SQLException {
+    private ClothingItem mapClothingItem(ResultSet r) throws SQLException{
 
-        String id = result.getString("id");
+        String category=r.getString("category");
 
-        String userId = result.getString("user_id");
+        String id=r.getString("id");
+        String userId=r.getString("user_id");
+        String name=r.getString("name");
+        String color=r.getString("color");
+        String brand=r.getString("brand");
+        String image=r.getString("image_path");
 
-        String name = result.getString("name");
-
-        String color = result.getString("color");
-
-        String brand = result.getString("brand");
-
-        String imagePath = result.getString("image_path");
-
-        ClothingStyle style = ClothingStyle.valueOf(result.getString("style"));
-
-        String category = result.getString("category");
-
-        String sleeveType = result.getString("sleeve_type");
-
-        String fitType = result.getString("fit_type");
-
-        String footwearType = result.getString("footwear_type");
+        ClothingStyle style=
+            ClothingStyle.valueOf(
+                    r.getString("style")
+            );
 
 
-        switch(category) {
+        return switch(category){
 
-            case "TOP":
+            case "TOP" -> new Top(
+                id,userId,name,color,brand,image,
+                style,
+                r.getString("sleeve_type")
+            );
 
-                return new Top(
-                    id,
-                    userId,
-                    name,
-                    color,
-                    brand,
-                    imagePath,
-                    style,
-                    sleeveType
-                );
+            case "BOTTOM" -> new Bottom(
+                id,userId,name,color,brand,image,
+                style,
+                r.getString("fit_type")
+            );
 
+            case "FOOTWEAR" -> new Footwear(
+                id,userId,name,color,brand,image,
+                style,
+                r.getString("footwear_type")
+            );
 
-            case "BOTTOM":
-
-                return new Bottom(
-                    id,
-                    userId,
-                    name,
-                    color,
-                    brand,
-                    imagePath,
-                    style,
-                    fitType
-                );
-
-
-            case "FOOTWEAR":
-
-                return new Footwear(
-                    id,
-                    userId,
-                    name,
-                    color,
-                    brand,
-                    imagePath,
-                    style,
-                    footwearType
-                );
-
-
-            default:
-
+            default ->
                 throw new SQLException(
-                        "Unknown clothing category: " + category
+                    "Unknown category: "+category
                 );
-
-        }
-
+        };
     }
-
 }

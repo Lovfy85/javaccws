@@ -13,8 +13,6 @@ public class Menu {
 
         frame.setSize(500,400);
 
-        frame.setResizable(false);
-
         frame.setLocationRelativeTo(null);
 
         frame.setContentPane(new LoginPanel(frame));

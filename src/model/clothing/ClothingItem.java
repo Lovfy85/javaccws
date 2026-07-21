@@ -60,6 +60,29 @@ public abstract class ClothingItem {
         return style;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+
+    public void setStyle(ClothingStyle style) {
+        this.style = style;
+    }
+
 
     @Override
     public String toString() {
