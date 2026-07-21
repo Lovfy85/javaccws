@@ -11,7 +11,11 @@ public class Menu {
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        frame.setSize(500,400);
+        frame.setSize(500,500);
+
+        frame.setResizable(false);
+
+        frame.setExtendedState(JFrame.NORMAL);
 
         frame.setLocationRelativeTo(null);
 

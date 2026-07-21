@@ -27,6 +27,10 @@ public class WardrobeManagementPanel extends JPanel {
 
     private ClothingItem selectedItem;
 
+    private boolean showDescription=false;
+
+    private JPanel descriptionPanel;
+
 
     public WardrobeManagementPanel(JFrame frame,User user){
         this.frame=frame;
@@ -55,16 +59,18 @@ public class WardrobeManagementPanel extends JPanel {
 
         main.add(header);
 
+        main.add(wardrobe());
+
         main.add(
                 new UserInfoPanel(
                         user,
                         this::refresh));
 
-        main.add(wardrobe());
         main.add(score());
 
 
         JScrollPane scroll=new JScrollPane(main);
+
         scroll.getVerticalScrollBar()
                 .setUnitIncrement(16);
 
@@ -79,10 +85,15 @@ public class WardrobeManagementPanel extends JPanel {
 
         JPanel p=box();
 
-        p.add(new JLabel(
+        JLabel label=new JLabel(
                 "Your Wardrobe ("+
                 user.getStylesProfile()
-                .getClothingStyle()+")"));
+                .getClothingStyle()+")");
+
+        label.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+        p.add(label);
 
 
         topSelector=new JComboBox<>(getTops());
@@ -152,7 +163,12 @@ public class WardrobeManagementPanel extends JPanel {
             String name,
             JComboBox<?> box){
 
-        p.add(new JLabel(name));
+        JLabel label=new JLabel(name);
+
+        label.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+        p.add(label);
 
 
         ClothingItem item=
@@ -165,12 +181,19 @@ public class WardrobeManagementPanel extends JPanel {
                 new ClothingCardPanel(item);
 
 
+        card.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+
         box.setMaximumSize(
                 new Dimension(820,30));
 
-
         box.setPreferredSize(
                 new Dimension(820,30));
+
+
+        box.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
 
 
         box.addActionListener(e->{
@@ -186,17 +209,33 @@ public class WardrobeManagementPanel extends JPanel {
 
 
         p.add(card);
+
+        p.add(
+                Box.createVerticalStrut(15)
+        );
+
         p.add(box);
+
+        p.add(
+                Box.createVerticalStrut(25)
+        );
 
     }
 
-
-    private JPanel score(){
+        private JPanel score(){
 
         JPanel p=box();
 
+        JPanel row=new JPanel(
+                new FlowLayout(
+                        FlowLayout.CENTER));
+
+
         JButton button=
                 new JButton("Outfit Score");
+
+        JButton info=
+                new JButton("Show Info");
 
 
         scoreLabel=
@@ -208,23 +247,74 @@ public class WardrobeManagementPanel extends JPanel {
                 e->calculateScore());
 
 
-        p.add(button);
+        info.addActionListener(e->{
+
+            showDescription=!showDescription;
+
+            descriptionPanel
+                    .setVisible(showDescription);
+
+            info.setText(
+                    showDescription?
+                    "Hide Info":
+                    "Show Info");
+
+        });
+
+
+        row.add(button);
+        row.add(info);
+
+
+        row.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+
+        p.add(row);
+
+
+        scoreLabel.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+
         p.add(scoreLabel);
 
 
-        p.add(new JLabel(
-            "<html><center>"+
-            "Score evaluates:<br>"+
-            "• color compatibility<br>"+
-            "• preferred colors<br>"+
-            "• style consistency<br>"+
-            "• neutral versatility<br><br>"+
-            "60-70 Excellent<br>"+
-            "45-59 Strong<br>"+
-            "30-44 Good<br>"+
-            "15-29 Fair<br>"+
-            "0-14 Poor"+
-            "</center></html>"));
+        descriptionPanel=new JPanel();
+
+        descriptionPanel.setLayout(
+                new BoxLayout(
+                        descriptionPanel,
+                        BoxLayout.Y_AXIS));
+
+
+        JLabel description=
+                new JLabel(
+                "<html><center>"+
+                "Score evaluates:<br><br>"+
+                "• Color compatibility<br>"+
+                "• Preferred colors<br>"+
+                "• Style consistency<br>"+
+                "• Neutral versatility<br><br>"+
+                "60-70 Excellent<br>"+
+                "45-59 Strong<br>"+
+                "30-44 Good<br>"+
+                "15-29 Fair<br>"+
+                "0-14 Poor"+
+                "</center></html>");
+
+
+        description.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+
+        descriptionPanel.add(description);
+
+        descriptionPanel.setVisible(false);
+
+
+        p.add(descriptionPanel);
+
 
         return p;
     }
@@ -294,7 +384,20 @@ public class WardrobeManagementPanel extends JPanel {
 
     private void remove(){
 
-        if(selectedItem==null)return;
+        if(selectedItem==null)
+            return;
+
+
+        int confirm=
+                JOptionPane.showConfirmDialog(
+                        this,
+                        "Are you sure you want to remove this clothing item?",
+                        "Confirm Removal",
+                        JOptionPane.YES_NO_OPTION);
+
+
+        if(confirm!=JOptionPane.YES_OPTION)
+            return;
 
 
         try{
@@ -379,12 +482,34 @@ public class WardrobeManagementPanel extends JPanel {
                         p,
                         BoxLayout.Y_AXIS));
 
+
         return p;
 
     }
 
 
     private void logout(){
+
+        int confirm=
+                JOptionPane.showConfirmDialog(
+                        this,
+                        "Are you sure you want to logout?",
+                        "Confirm Logout",
+                        JOptionPane.YES_NO_OPTION);
+
+
+        if(confirm!=JOptionPane.YES_OPTION)
+            return;
+
+
+        frame.setExtendedState(
+                JFrame.NORMAL);
+
+        frame.setResizable(false);
+
+        frame.setSize(500,500);
+
+        frame.setLocationRelativeTo(null);
 
         frame.setContentPane(
                 new LoginPanel(frame));

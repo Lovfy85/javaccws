@@ -17,21 +17,6 @@ public class UserInfoPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 
-        JLabel userLabel = new JLabel(
-            "User: " + user.getName()
-        );
-
-        userLabel.setFont(
-            new Font("Arial", Font.PLAIN, 18)
-        );
-
-        userLabel.setAlignmentX(
-            Component.CENTER_ALIGNMENT
-        );
-
-
-        add(userLabel);
-
         add(
             Box.createVerticalStrut(10)
         );
@@ -51,7 +36,7 @@ public class UserInfoPanel extends JPanel {
 
 
         JLabel styleLabel = new JLabel(
-            "Style:"
+            "Aesthetic:"
         );
 
 
@@ -74,7 +59,7 @@ public class UserInfoPanel extends JPanel {
 
 
         JLabel colorLabel = new JLabel(
-            "Color Preference:"
+            "Color Category:"
         );
 
 
@@ -96,14 +81,26 @@ public class UserInfoPanel extends JPanel {
 
         preferencePanel.add(styleLabel);
         preferencePanel.add(styleSelector);
+
         preferencePanel.add(
             Box.createHorizontalStrut(20)
         );
+
         preferencePanel.add(colorLabel);
         preferencePanel.add(colorSelector);
 
 
+        preferencePanel.setAlignmentX(
+            Component.CENTER_ALIGNMENT
+        );
+
+
         add(preferencePanel);
+
+
+        add(
+            Box.createVerticalStrut(10)
+        );
 
 
         JButton updateButton =
