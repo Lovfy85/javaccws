@@ -66,7 +66,9 @@ public class OutfitRepository {
             );
 
 
-            statement.executeUpdate();
+            int rows = statement.executeUpdate();
+
+            System.out.println("Inserted outfits rows: " + rows);
 
         }
 

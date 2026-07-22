@@ -355,51 +355,54 @@ public class OutfitDisplayUI {
         saveButton.addActionListener(e->{
 
 
+            int confirm =
+                    JOptionPane.showConfirmDialog(
+                            null,
+                            "Save this outfit?",
+                            "Confirm Save",
+                            JOptionPane.YES_NO_OPTION);
+
+
+
+            if(confirm != JOptionPane.YES_OPTION)
+                return;
+
+
+
             try{
 
 
                 wardrobeService.saveOutfit(
                         outfit,
-                        user
-                );
+                        user);
 
-
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Outfit saved successfully!"
-                );
-
-
-            }
-
-
-            catch(InvalidClothingException ex){
 
 
                 JOptionPane.showMessageDialog(
                         null,
-                        ex.getMessage()
-                );
+                        "Outfit saved successfully!");
 
 
-            }
+
+            }catch(InvalidClothingException ex){
 
 
-            catch(Exception ex){
+                JOptionPane.showMessageDialog(
+                        null,
+                        ex.getMessage());
+
+
+            }catch(Exception ex){
 
 
                 JOptionPane.showMessageDialog(
                         null,
                         "Error saving outfit: "
-                        + ex.getMessage()
-                );
-
+                        +ex.getMessage());
 
             }
 
-
         });
-
 
 
 

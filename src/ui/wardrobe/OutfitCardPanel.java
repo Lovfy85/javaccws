@@ -3,53 +3,96 @@ package ui.wardrobe;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.sql.SQLException;
 
-import model.Outfit;
+import model.*;
 import model.clothing.*;
+
+import repository.OutfitRepository;
 import util.ImageLoader;
 
 
 public class OutfitCardPanel extends JPanel {
 
+
+    private Outfit outfit;
+    private User user;
+
+    private Runnable refresh;
+
+
+    private OutfitRepository repository =
+            new OutfitRepository();
+
+
+
     private JLabel topImage = new JLabel();
     private JLabel bottomImage = new JLabel();
     private JLabel footwearImage = new JLabel();
 
-    private JLabel topName = new JLabel();
-    private JLabel bottomName = new JLabel();
-    private JLabel footwearName = new JLabel();
-
-    private JLabel scoreLabel = new JLabel();
 
 
-    private Outfit outfit;
-
-
-    public OutfitCardPanel(Outfit outfit){
+    public OutfitCardPanel(
+            Outfit outfit,
+            User user,
+            Runnable refresh){
 
         this.outfit = outfit;
+        this.user = user;
+        this.refresh = refresh;
+
 
         setLayout(
-            new BoxLayout(
-                this,
-                BoxLayout.Y_AXIS
-            )
-        );
+                new BoxLayout(
+                        this,
+                        BoxLayout.Y_AXIS));
 
 
         setBorder(
-            BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.GRAY),
-                new EmptyBorder(10,10,10,10)
-            )
-        );
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(Color.GRAY),
+                        new EmptyBorder(10,10,10,10)));
 
 
-        setBackground(Color.WHITE);
+
+        setBackground(
+                Color.WHITE);
+
+
+
+        setPreferredSize(
+                new Dimension(
+                        330,
+                        260));
+
+
+        setMaximumSize(
+                new Dimension(
+                        330,
+                        260));
+
+
 
         buildUI();
 
+
+
+        addMouseListener(
+                new java.awt.event.MouseAdapter(){
+
+            public void mouseClicked(
+                    java.awt.event.MouseEvent e){
+
+                menu();
+
+            }
+
+        });
+
     }
+
+
+
 
 
 
@@ -58,73 +101,63 @@ public class OutfitCardPanel extends JPanel {
 
         JLabel title =
                 new JLabel(
-                    "Saved Outfit"
-                );
+                        "Saved Outfit");
 
 
         title.setFont(
-            new Font(
-                "Arial",
-                Font.BOLD,
-                18
-            )
-        );
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        16));
 
 
         title.setAlignmentX(
-            Component.CENTER_ALIGNMENT
-        );
+                Component.CENTER_ALIGNMENT);
 
 
         add(title);
 
 
+
         add(
-            Box.createVerticalStrut(10)
-        );
+                Box.createVerticalStrut(8));
+
 
 
 
         JPanel images =
                 new JPanel(
-                    new GridLayout(
-                        1,
-                        3,
-                        10,
-                        10
-                    )
-                );
+                        new GridLayout(
+                                1,
+                                3,
+                                20,
+                                5));
 
 
-        images.setBackground(Color.WHITE);
+
+        images.setBackground(
+                Color.WHITE);
+
+
+
+        images.add(
+                createItemPanel(
+                        outfit.getTop(),
+                        topImage));
 
 
 
         images.add(
-            createItemPanel(
-                outfit.getTop(),
-                topImage,
-                topName
-            )
-        );
+                createItemPanel(
+                        outfit.getBottom(),
+                        bottomImage));
+
 
 
         images.add(
-            createItemPanel(
-                outfit.getBottom(),
-                bottomImage,
-                bottomName
-            )
-        );
-
-
-        images.add(
-            createItemPanel(
-                outfit.getFootwear(),
-                footwearImage,
-                footwearName
-            )
-        );
+                createItemPanel(
+                        outfit.getFootwear(),
+                        footwearImage));
 
 
 
@@ -133,34 +166,69 @@ public class OutfitCardPanel extends JPanel {
 
 
         add(
-            Box.createVerticalStrut(10)
-        );
+                Box.createVerticalStrut(10));
 
 
 
-        scoreLabel.setText(
-            "Score: "
-            + outfit.getScore()
-        );
 
 
-        scoreLabel.setFont(
-            new Font(
-                "Arial",
-                Font.BOLD,
-                15
-            )
-        );
+        JLabel score =
+                new JLabel(
+                        "Score: "
+                        + outfit.getScore());
 
 
-        scoreLabel.setAlignmentX(
-            Component.CENTER_ALIGNMENT
-        );
+
+        score.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        15));
 
 
-        add(scoreLabel);
+
+        score.setHorizontalAlignment(
+                SwingConstants.CENTER);
+
+        score.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+
+        add(score);
+
+
+
+        add(
+                Box.createVerticalStrut(8));
+
+
+
+
+        JLabel description =
+                new JLabel(
+                "<html><center>"
+                + "Top: "
+                + outfit.getTop().getName()
+                + "<br>"
+                + "Bottom: "
+                + outfit.getBottom().getName()
+                + "<br>"
+                + "Footwear: "
+                + outfit.getFootwear().getName()
+                + "</center></html>");
+
+
+
+        description.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+
+
+        add(description);
 
     }
+
+
 
 
 
@@ -168,59 +236,60 @@ public class OutfitCardPanel extends JPanel {
 
     private JPanel createItemPanel(
             ClothingItem item,
-            JLabel image,
-            JLabel name){
+            JLabel image){
+
 
 
         JPanel panel =
                 new JPanel();
 
 
+
         panel.setLayout(
-            new BoxLayout(
-                panel,
-                BoxLayout.Y_AXIS
-            )
-        );
+                new BoxLayout(
+                        panel,
+                        BoxLayout.Y_AXIS));
+
 
 
         panel.setBackground(
-            Color.WHITE
-        );
+                Color.WHITE);
+
+
 
 
         if(item != null){
 
 
+
             image.setIcon(
-                ImageLoader.load(
-                    item.getImagePath(),
-                    100,
-                    100
-                )
-            );
+                    ImageLoader.load(
+                            item.getImagePath(),
+                            80,
+                            80));
+
 
 
             image.setAlignmentX(
-                Component.CENTER_ALIGNMENT
-            );
+                    Component.CENTER_ALIGNMENT);
 
 
-            name.setText(
-                item.getName()
-            );
-
+            JLabel name =
+                    new JLabel(
+                            item.getName(),
+                            SwingConstants.CENTER);
 
             name.setAlignmentX(
-                Component.CENTER_ALIGNMENT
-            );
+                    Component.CENTER_ALIGNMENT);
 
 
             panel.add(image);
 
+
+
             panel.add(
-                Box.createVerticalStrut(5)
-            );
+                    Box.createVerticalStrut(5));
+
 
 
             panel.add(name);
@@ -228,9 +297,119 @@ public class OutfitCardPanel extends JPanel {
         }
 
 
+
         return panel;
 
     }
+
+
+
+
+
+
+
+    private void menu(){
+
+
+        String[] options = {
+                "View Outfit",
+                "Delete Outfit",
+                "Cancel"
+        };
+
+
+
+        int choice =
+                JOptionPane.showOptionDialog(
+                        this,
+                        "Saved Outfit",
+                        "Options",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE,
+                        null,
+                        options,
+                        options[0]);
+
+
+
+        if(choice == 0){
+
+
+            new SavedOutfitViewDialog(
+                    user,
+                    outfit);
+
+
+
+        }else if(choice == 1){
+
+
+            delete();
+
+        }
+
+    }
+
+
+
+
+
+
+
+    private void delete(){
+
+
+        int confirm =
+                JOptionPane.showConfirmDialog(
+                        this,
+                        "Delete this outfit?",
+                        "Confirm",
+                        JOptionPane.YES_NO_OPTION);
+
+
+
+        if(confirm != JOptionPane.YES_OPTION)
+            return;
+
+
+
+
+        try{
+
+
+            repository.delete(
+                    outfit.getId());
+
+
+
+            user.getSavedOutfits()
+                    .remove(outfit);
+
+
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Outfit deleted.");
+
+
+
+            refresh.run();
+
+
+
+        }catch(SQLException e){
+
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    e.getMessage());
+
+        }
+
+    }
+
+
+
 
 
 

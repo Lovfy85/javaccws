@@ -49,39 +49,156 @@ public class WardrobeManagementPanel extends JPanel {
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(20,20,20,20));
 
-        JPanel main=box();
 
-        JPanel header=new JPanel(new BorderLayout());
+        JPanel main = new JPanel();
+        main.setLayout(new BoxLayout(main, BoxLayout.Y_AXIS));
 
-        JLabel title=new JLabel("Welcome, "+user.getName());
-        title.setFont(new Font("Arial",Font.BOLD,28));
+        JPanel header = new JPanel(new BorderLayout());
 
-        header.add(title,BorderLayout.WEST);
-        header.add(buttons(),BorderLayout.EAST);
+        JLabel title =
+                new JLabel("Welcome, "+user.getName());
+
+        title.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        28));
+
+        header.add(
+                title,
+                BorderLayout.WEST);
+
+        header.add(
+                buttons(),
+                BorderLayout.EAST);
 
         main.add(header);
-        main.add(wardrobe());
-        main.add(savedOutfits());
 
-        main.add(new UserInfoPanel(user,this::refresh));
+        main.add(
+                Box.createVerticalStrut(20));
+
+        JPanel center =
+                new JPanel(
+                        new BorderLayout(50,0));
+
+        JPanel clothing =
+                wardrobe();
+
+
+        JPanel clothingWrapper =
+            new JPanel(
+                new GridBagLayout());
+
+
+        GridBagConstraints gbc =
+                new GridBagConstraints();
+
+        gbc.anchor =
+                GridBagConstraints.CENTER;
+
+
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+
+
+        gbc.fill =
+                GridBagConstraints.NONE;
+
+
+        clothingWrapper.add(
+                clothing,
+                gbc);
+
+
+        center.add(
+                clothingWrapper,
+                BorderLayout.CENTER);
+
+
+
+        JPanel savedArea =
+                new JPanel(
+                        new BorderLayout(0,0));
+
+
+
+        JButton toggle =
+                new JButton("<");
+
+
+        toggle.setPreferredSize(
+                new Dimension(
+                        60,
+                        40));
+
+    
+        JScrollPane savedScroll = savedOutfits();
+        
+        savedScroll.setPreferredSize(new Dimension(420, 520));
+
+        savedArea.add(toggle, BorderLayout.WEST);
+        savedArea.add(savedScroll, BorderLayout.CENTER);
+
+
+        toggle.addActionListener(e -> {
+
+            boolean visible =
+                    savedScroll.isVisible();
+
+
+            savedScroll.setVisible(!visible);
+
+
+            toggle.setText(
+                    visible ?
+                    ">" :
+                    "<");
+
+
+            savedArea.revalidate();
+            savedArea.repaint();
+
+        });
+
+        center.add(
+                savedArea,
+                BorderLayout.EAST);
+
+        main.add(center);
+
+        main.add(
+                Box.createVerticalStrut(20));
 
         main.add(score());
 
+        main.add(
+                Box.createVerticalStrut(20));
 
-        JScrollPane scroll=new JScrollPane(main);
+        main.add(
+                new UserInfoPanel(
+                        user,
+                        this::refresh));
 
-        scroll.getVerticalScrollBar().setUnitIncrement(16);
-        scroll.setHorizontalScrollBarPolicy(
+        JScrollPane appScroll =
+                new JScrollPane(main);
+
+
+        appScroll.getVerticalScrollBar()
+                .setUnitIncrement(16);
+
+        appScroll.setHorizontalScrollBarPolicy(
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        add(scroll);
-    }
+        add(appScroll);
 
+    }
 
 
     private JPanel wardrobe(){
 
         JPanel p=box();
+    
+        p.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel label=new JLabel(
                 "Current Clothing Style: "+
@@ -215,111 +332,78 @@ public class WardrobeManagementPanel extends JPanel {
     }
 
 
-    private JPanel savedOutfits(){
+    private JScrollPane savedOutfits(){
 
-        JPanel container=box();
+        JPanel container = new JPanel(new BorderLayout());
 
-        JToggleButton toggle=
-                new JToggleButton("Saved Outfits ▼");
+        container.setBackground(Color.WHITE);
 
-        toggle.setAlignmentX(
-                Component.CENTER_ALIGNMENT);
-
-
-        JPanel cards=
-                new JPanel(
-                        new FlowLayout(
-                                FlowLayout.LEFT,
-                                15,
-                                15));
-
-        cards.setBackground(Color.WHITE);
-
+        JPanel list = new JPanel();
+        list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
+        list.setBackground(Color.WHITE);
 
         if(user.getSavedOutfits().isEmpty()){
 
-            cards.add(
-                    new JLabel(
-                            "No saved outfits yet."));
+            JLabel empty = new JLabel("No saved outfits yet.");
+            empty.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        }else{
+            list.add(Box.createVerticalStrut(15));
+            list.add(empty);
+        }
+        else{
 
+            for(Outfit outfit : user.getSavedOutfits()){
 
-            for(Outfit outfit:user.getSavedOutfits()){
+                OutfitCardPanel card =
+                        new OutfitCardPanel(
+                                outfit,
+                                user,
+                                this::refresh);
 
+                card.setPreferredSize(
+                        new Dimension(320,260));
 
-                JPanel wrapper=
+                card.setMaximumSize(
+                        new Dimension(320,260));
+
+                card.setAlignmentX(
+                        Component.CENTER_ALIGNMENT);
+
+                JPanel wrapper =
                         new JPanel(
-                                new BorderLayout());
+                                new FlowLayout(
+                                        FlowLayout.CENTER));
 
+                wrapper.setBackground(Color.WHITE);
 
-                JLabel style=
-                        new JLabel(
-                                "Style: "+
-                                outfit.getTop()
-                                .getStyle());
+                wrapper.add(card);
 
-
-                style.setHorizontalAlignment(
-                        SwingConstants.CENTER);
-
-
-                wrapper.add(
-                        style,
-                        BorderLayout.NORTH);
-
-
-                wrapper.add(
-                        new OutfitCardPanel(outfit),
-                        BorderLayout.CENTER);
-
-
-                cards.add(wrapper);
-
+                list.add(wrapper);
+                list.add(Box.createVerticalStrut(20));
             }
-
         }
 
+        container.add(list, BorderLayout.NORTH);
 
-        cards.setVisible(false);
+        JScrollPane scroll = new JScrollPane(container);
 
+        scroll.setBorder(null);
 
-        toggle.addActionListener(e->{
+        scroll.setVerticalScrollBarPolicy(
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
+        scroll.setHorizontalScrollBarPolicy(
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-            boolean visible=
-                    toggle.isSelected();
+        scroll.setBorder(
+            BorderFactory.createTitledBorder("Saved Outfits")
+        );
 
+        scroll.getVerticalScrollBar().setUnitIncrement(20);
+        scroll.getVerticalScrollBar().setBlockIncrement(100);
 
-            cards.setVisible(visible);
-
-
-            toggle.setText(
-                    visible?
-                    "Saved Outfits ▲":
-                    "Saved Outfits ▼");
-
-
-            revalidate();
-            repaint();
-
-        });
-
-
-
-        container.add(toggle);
-
-        container.add(
-                Box.createVerticalStrut(10));
-
-
-        container.add(cards);
-
-
-        return container;
-
+        return scroll;
     }
-
 
     private JPanel score(){
 
@@ -493,41 +577,55 @@ public class WardrobeManagementPanel extends JPanel {
     private void saveOutfit(){
 
         if(generatedOutfit==null){
-            JOptionPane.showMessageDialog(this,"Calculate an outfit first.");
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Calculate an outfit first.");
             return;
         }
 
         try{
 
-            boolean exists=outfitRepository.exists(
+            boolean exists =
+                    outfitRepository.exists(
                     user.getId(),
                     generatedOutfit.getTop().getId(),
                     generatedOutfit.getBottom().getId(),
                     generatedOutfit.getFootwear().getId());
 
+
             if(exists){
-                JOptionPane.showMessageDialog(this,"This outfit is already saved.");
+                JOptionPane.showMessageDialog(
+                        this,
+                        "This outfit is already saved.");
                 return;
             }
+
 
             outfitRepository.save(
                     generatedOutfit.getId(),
                     user.getId(),
                     generatedOutfit);
 
+
             user.addSavedOutfit(generatedOutfit);
+
 
             JOptionPane.showMessageDialog(
                     this,
                     "Outfit saved successfully.");
 
+
             refresh();
 
+
         }catch(SQLException e){
+
             JOptionPane.showMessageDialog(
                     this,
-                    e.getMessage());
+                    "Database error: "+e.getMessage());
+
         }
+
     }
 
 
