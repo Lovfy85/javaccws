@@ -38,7 +38,7 @@ public class SavedOutfitViewDialog extends JDialog {
         main.add(items);
         main.add(Box.createVerticalStrut(15));
 
-        JLabel score=new JLabel("Score: "+outfit.getScore());
+        JLabel score=new JLabel("Generated Score: "+outfit.getScore());
         score.setFont(new Font("Arial",Font.BOLD,16));
         score.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -82,7 +82,7 @@ public class SavedOutfitViewDialog extends JDialog {
                     "Color Palette: "+
                     ColorMatcher.getColorCategory(item.getColor())+
                     "<br>"+
-                    "Style: "+item.getStyle()+"<br>";
+                    "Aesthetic Style: "+item.getStyle()+"<br>";
 
 
             if(item instanceof Top top)

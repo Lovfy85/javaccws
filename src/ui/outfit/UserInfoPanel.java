@@ -36,7 +36,7 @@ public class UserInfoPanel extends JPanel {
 
 
         JLabel styleLabel = new JLabel(
-            "Aesthetic:"
+            "Current Aesthetic:"
         );
 
 
@@ -59,7 +59,7 @@ public class UserInfoPanel extends JPanel {
 
 
         JLabel colorLabel = new JLabel(
-            "Color Palette:"
+            "Current Color Palette:"
         );
 
 
