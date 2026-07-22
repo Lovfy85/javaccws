@@ -48,6 +48,12 @@ public class OutfitCardPanel extends JPanel {
         title.setFont(new Font("Arial", Font.BOLD, 16));
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(title);
+
+        JLabel style = new JLabel("Style: " + getStyle());
+        style.setFont(new Font("Arial", Font.PLAIN, 14));
+        style.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(style);
+
         add(Box.createVerticalStrut(8));
 
         JPanel images = new JPanel(new GridLayout(1, 3, 20, 5));
@@ -76,6 +82,19 @@ public class OutfitCardPanel extends JPanel {
 
         description.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(description);
+    }
+
+    private String getStyle() {
+        if (outfit.getTop() != null && outfit.getTop().getStyle() != null)
+            return outfit.getTop().getStyle().toString();
+
+        if (outfit.getBottom() != null && outfit.getBottom().getStyle() != null)
+            return outfit.getBottom().getStyle().toString();
+
+        if (outfit.getFootwear() != null && outfit.getFootwear().getStyle() != null)
+            return outfit.getFootwear().getStyle().toString();
+
+        return "Unknown";
     }
 
     private JPanel createItemPanel(ClothingItem item, JLabel image) {
