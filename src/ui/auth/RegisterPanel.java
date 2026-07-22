@@ -69,12 +69,12 @@ public class RegisterPanel extends JPanel {
         panel.add(Box.createVerticalStrut(20));
 
 
-        addField(panel,"Username",usernameField);
-        addField(panel,"Name",nameField);
-        addField(panel,"Password",passwordField);
+        addField(panel,"Make A Username",usernameField);
+        addField(panel,"Your Name",nameField);
+        addField(panel,"Make Password",passwordField);
         addField(panel,"Confirm Password",confirmField);
-        addField(panel,"Preferred Style",styleBox);
-        addField(panel,"Preferred Color Category",colorBox);
+        addField(panel,"Default Clothing Style",styleBox);
+        addField(panel,"Type Of Color Palette",colorBox);
 
 
         JButton register = new JButton("Register");

@@ -86,7 +86,7 @@ public class WardrobeManagementPanel extends JPanel {
         JPanel p=box();
 
         JLabel label=new JLabel(
-                "Your Wardrobe ("+
+                "Current Clothing Style ("+
                 user.getStylesProfile()
                 .getClothingStyle()+")");
 
@@ -405,11 +405,31 @@ public class WardrobeManagementPanel extends JPanel {
         }
 
 
-        frame.setContentPane(
-                new EditClothingPanel(
-                        frame,user,selectedItem));
+        JDialog dialog=
+                new JDialog(
+                        frame,
+                        "Edit Clothing Item",
+                        true);
 
-        refreshFrame();
+
+        dialog.setContentPane(
+                new EditClothingPanel(
+                        frame,
+                        user,
+                        selectedItem,
+                        dialog));
+
+
+        dialog.setSize(
+                450,
+                500);
+
+
+        dialog.setResizable(false);
+
+        dialog.setLocationRelativeTo(frame);
+
+        dialog.setVisible(true);
 
     }
 

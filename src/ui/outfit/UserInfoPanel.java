@@ -59,7 +59,7 @@ public class UserInfoPanel extends JPanel {
 
 
         JLabel colorLabel = new JLabel(
-            "Color Category:"
+            "Color Palette:"
         );
 
 

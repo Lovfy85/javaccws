@@ -175,15 +175,6 @@ public class OutfitDisplayUI {
 
         panel.add(Box.createVerticalStrut(20));
 
-
-        GeneratedOutfitPanel generatedPanel = new GeneratedOutfitPanel();
-
-        generatedPanel.display(outfit);
-
-
-        panel.add(generatedPanel);
-
-
         return panel;
     }
 }
