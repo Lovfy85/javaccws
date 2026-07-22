@@ -4,7 +4,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-import model.clothing.ClothingItem;
+import model.clothing.*;
 import util.ColorMatcher;
 import util.ImageLoader;
 
@@ -16,6 +16,7 @@ public class ClothingCardPanel extends JPanel{
     private JLabel color=new JLabel();
     private JLabel category=new JLabel();
     private JLabel style=new JLabel();
+    private JLabel type=new JLabel();
 
 
     public ClothingCardPanel(ClothingItem item){
@@ -49,7 +50,9 @@ public class ClothingCardPanel extends JPanel{
 
 
         name.setFont(
-                new Font("Arial",Font.BOLD,24));
+                new Font("Arial",
+                Font.BOLD,
+                24));
 
 
         Font f=new Font(
@@ -57,10 +60,12 @@ public class ClothingCardPanel extends JPanel{
                 Font.PLAIN,
                 16);
 
+
         brand.setFont(f);
         color.setFont(f);
         category.setFont(f);
         style.setFont(f);
+        type.setFont(f);
 
 
         info.add(name);
@@ -68,6 +73,7 @@ public class ClothingCardPanel extends JPanel{
         info.add(color);
         info.add(category);
         info.add(style);
+        info.add(type);
 
 
         add(image,BorderLayout.WEST);
@@ -75,10 +81,10 @@ public class ClothingCardPanel extends JPanel{
 
 
         setPreferredSize(
-                new Dimension(820,220));
+                new Dimension(820,240));
 
         setMaximumSize(
-                new Dimension(820,220));
+                new Dimension(820,240));
 
     }
 
@@ -96,6 +102,7 @@ public class ClothingCardPanel extends JPanel{
             color.setText("");
             category.setText("");
             style.setText("");
+            type.setText("");
 
             return;
         }
@@ -133,6 +140,31 @@ public class ClothingCardPanel extends JPanel{
 
         style.setText(
                 "Style: "+item.getStyle());
+
+
+        if(item instanceof Top top){
+
+            type.setText(
+                    "Sleeve Type: "+
+                    top.getSleeveType());
+
+        }
+
+        else if(item instanceof Bottom bottom){
+
+            type.setText(
+                    "Fit Type: "+
+                    bottom.getFitType());
+
+        }
+
+        else if(item instanceof Footwear footwear){
+
+            type.setText(
+                    "Footwear Type: "+
+                    footwear.getType());
+
+        }
 
 
         revalidate();
