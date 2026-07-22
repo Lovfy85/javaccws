@@ -164,7 +164,7 @@ public class UploadClothingPanel extends JPanel {
 
         imageLabel=
                 new JLabel(
-                        "No image",
+                        "--No image yet--",
                         SwingConstants.CENTER);
 
 
