@@ -7,15 +7,31 @@ public class ImageLoader {
 
     public static ImageIcon load(String path) {
 
-        ImageIcon icon = new ImageIcon(path);
+        return load(path,250,250);
 
-        Image resized = icon.getImage()
+    }
+
+
+    public static ImageIcon load(
+            String path,
+            int width,
+            int height) {
+
+
+        ImageIcon icon =
+                new ImageIcon(path);
+
+
+        Image resized =
+                icon.getImage()
                 .getScaledInstance(
-                        250,
-                        250,
+                        width,
+                        height,
                         Image.SCALE_SMOOTH
                 );
 
+
         return new ImageIcon(resized);
+
     }
 }

@@ -4,6 +4,8 @@ import model.*;
 import model.clothing.*;
 
 import repository.WardrobeRepository;
+import repository.OutfitRepository;
+
 import exception.InvalidClothingException;
 
 import java.sql.SQLException;
@@ -12,6 +14,8 @@ import java.util.*;
 public class WardrobeService {
 
     private WardrobeRepository wardrobeRepository = new WardrobeRepository();
+    private OutfitRepository outfitRepository = new OutfitRepository();
+
 
     public void addClothingItem(ClothingItem item, User user) throws SQLException,InvalidClothingException{
 
@@ -36,6 +40,41 @@ public class WardrobeService {
 
         wardrobeRepository.update(item);
     }
+
+
+
+    public void saveOutfit(Outfit outfit, User user) throws SQLException, InvalidClothingException {
+
+
+        boolean exists =
+            outfitRepository.exists(
+                user.getId(),
+                outfit.getTop().getId(),
+                outfit.getBottom().getId(),
+                outfit.getFootwear().getId()
+            );
+
+
+        if(exists){
+
+            throw new InvalidClothingException(
+                "This outfit has already been saved."
+            );
+
+        }
+
+
+        outfitRepository.save(
+            UUID.randomUUID().toString(),
+            user.getId(),
+            outfit
+        );
+
+
+        user.addSavedOutfit(outfit);
+
+    }
+
 
 
     public boolean hasItems(Wardrobe wardrobe){

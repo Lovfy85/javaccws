@@ -76,6 +76,10 @@ CREATE TABLE outfits (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
 
+    CONSTRAINT unique_saved_outfit
+        UNIQUE(user_id, top_id, bottom_id, footwear_id),
+
+
     CONSTRAINT fk_outfit_user
         FOREIGN KEY (user_id)
         REFERENCES users(id)

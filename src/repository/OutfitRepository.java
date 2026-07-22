@@ -8,10 +8,14 @@ import model.clothing.*;
 import exception.InvalidClothingException;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class OutfitRepository {
 
     private WardrobeRepository wardrobeRepository = new WardrobeRepository();
+
 
     public void save(String outfitId, String userId, Outfit outfit) throws SQLException {
 
@@ -20,6 +24,7 @@ public class OutfitRepository {
                 (id, user_id, top_id, bottom_id, footwear_id, score)
                 VALUES (?, ?, ?, ?, ?, ?)
                 """;
+
 
         try(Connection connection = DBConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -68,13 +73,63 @@ public class OutfitRepository {
     }
 
 
-    public Outfit findById(String outfitId) throws SQLException, InvalidClothingException {
+
+    public boolean exists(
+            String userId,
+            String topId,
+            String bottomId,
+            String footwearId
+    ) throws SQLException {
+
+
+        String sql = """
+                SELECT COUNT(*)
+                FROM outfits
+                WHERE user_id = ?
+                AND top_id = ?
+                AND bottom_id = ?
+                AND footwear_id = ?
+                """;
+
+
+        try(Connection connection = DBConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql)) {
+
+
+            statement.setString(1, userId);
+            statement.setString(2, topId);
+            statement.setString(3, bottomId);
+            statement.setString(4, footwearId);
+
+
+            ResultSet result = statement.executeQuery();
+
+
+            if(result.next()) {
+
+                return result.getInt(1) > 0;
+
+            }
+
+        }
+
+
+        return false;
+    }
+
+
+
+
+    public Outfit findById(String outfitId)
+            throws SQLException, InvalidClothingException {
+
 
         String sql = """
             SELECT *
             FROM outfits
             WHERE id = ?
             """;
+
 
         try(Connection connection = DBConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -86,14 +141,12 @@ public class OutfitRepository {
             );
 
 
-
             ResultSet result =
                     statement.executeQuery();
 
 
 
             if(result.next()) {
-
 
 
                 String topId =
@@ -150,17 +203,77 @@ public class OutfitRepository {
 
         }
 
+
         return null;
 
     }
 
 
+
+
+    public List<Outfit> findByUserId(String userId)
+            throws SQLException, InvalidClothingException {
+
+
+        List<Outfit> outfits = new ArrayList<>();
+
+
+        String sql = """
+                SELECT id
+                FROM outfits
+                WHERE user_id = ?
+                """;
+
+
+
+        try(Connection connection = DBConnection.getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql)) {
+
+
+            statement.setString(
+                    1,
+                    userId
+            );
+
+
+            ResultSet result =
+                    statement.executeQuery();
+
+
+
+            while(result.next()) {
+
+
+                Outfit outfit =
+                        findById(
+                                result.getString("id")
+                        );
+
+
+                if(outfit != null) {
+
+                    outfits.add(outfit);
+
+                }
+
+            }
+
+        }
+
+
+        return outfits;
+
+    }
+
+    
     public void delete(String outfitId) throws SQLException {
+
 
         String sql = """
             DELETE FROM outfits
             WHERE id = ?
             """;
+
 
         try(Connection connection = DBConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -171,6 +284,7 @@ public class OutfitRepository {
                     1,
                     outfitId
             );
+
 
             statement.executeUpdate();
 
