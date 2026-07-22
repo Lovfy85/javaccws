@@ -44,7 +44,7 @@ public class WardrobeRepository {
 
         String sql="""
             UPDATE clothing_items
-            SET name=?,brand=?,image_path=?,style=?,
+            SET name=?,color=?,brand=?,image_path=?,style=?,
                 sleeve_type=?,fit_type=?,footwear_type=?
             WHERE id=?
             """;
@@ -54,13 +54,14 @@ public class WardrobeRepository {
             PreparedStatement s=c.prepareStatement(sql)){
 
             s.setString(1,item.getName());
-            s.setString(2,item.getBrand());
-            s.setString(3,item.getImagePath());
-            s.setString(4,item.getStyle().name());
+            s.setString(2,item.getColor());
+            s.setString(3,item.getBrand());
+            s.setString(4,item.getImagePath());
+            s.setString(5,item.getStyle().name());
 
-            setExtraFields(s,item,5);
+            setExtraFields(s,item,6);
 
-            s.setString(8,item.getId());
+            s.setString(9,item.getId());
 
             s.executeUpdate();
         }

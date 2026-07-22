@@ -5,7 +5,9 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.io.File;
 import java.util.UUID;
-import javax.imageio.ImageIO;
+
+import util.ImageProcessor;
+import util.ImageLoader;
 
 import model.*;
 import model.clothing.*;
@@ -88,7 +90,6 @@ public class UploadClothingPanel extends JPanel {
 
 
         p.add(title);
-
 
         p.add(
                 Box.createVerticalStrut(15));
@@ -211,7 +212,18 @@ public class UploadClothingPanel extends JPanel {
                 Component.CENTER_ALIGNMENT);
 
 
+        JLabel imageInfo=
+                new JLabel(
+                        "Supported formats: JPG, JPEG, PNG",
+                        SwingConstants.CENTER);
+
+
+        imageInfo.setAlignmentX(
+                Component.CENTER_ALIGNMENT);
+
+
         p.add(image);
+        p.add(imageInfo);
         p.add(imageLabel);
         p.add(buttons);
 
@@ -249,7 +261,7 @@ public class UploadClothingPanel extends JPanel {
                         30));
 
 
-        ((JComponent) c).setAlignmentX(
+        ((JComponent)c).setAlignmentX(
                 Component.CENTER_ALIGNMENT);
 
 
@@ -274,7 +286,7 @@ public class UploadClothingPanel extends JPanel {
                         30));
 
 
-        ((JComponent) c).setAlignmentX(
+        ((JComponent)c).setAlignmentX(
                 Component.CENTER_ALIGNMENT);
 
 
@@ -282,6 +294,7 @@ public class UploadClothingPanel extends JPanel {
         p.add(c);
 
     }
+
 
     private void chooseImage(){
 
@@ -294,9 +307,7 @@ public class UploadClothingPanel extends JPanel {
                 "Images",
                 "png",
                 "jpg",
-                "jpeg",
-                "gif",
-                "webp"));
+                "jpeg"));
 
 
         if(chooser.showOpenDialog(this)
@@ -307,26 +318,19 @@ public class UploadClothingPanel extends JPanel {
 
             try{
 
-                Image img=
-                        ImageIO.read(file);
-
-
-                img=img.getScaledInstance(
-                        150,
-                        150,
-                        Image.SCALE_SMOOTH);
+                imagePath=
+                        ImageProcessor.process(file);
 
 
                 imageLabel.setIcon(
-                        new ImageIcon(img));
+                        ImageLoader.load(
+                                imagePath,
+                                150,
+                                150));
 
 
                 imageLabel.setText(
                         file.getName());
-
-
-                imagePath=
-                        file.getAbsolutePath();
 
 
             }catch(Exception e){
